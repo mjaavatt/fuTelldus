@@ -16,6 +16,8 @@ $lang = array(
 	"Lights" => "Lights",
 	"Settings" => "Settings",
 	"Log out" => "Log out",
+	"Return" => "Return",
+  	"Switch to" => "Switch to",
 
 	"Page settings" => "Page settings",
 	"Users" => "Users",
@@ -92,6 +94,7 @@ $lang = array(
 	"Combine charts" => "Combine charts",
 	"Split charts" => "Split charts",
 	"View chart" => "View chart",
+  	"Temp now" => "Current temperature",
 
 
 	// Sensors
