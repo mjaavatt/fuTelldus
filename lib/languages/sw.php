@@ -11,11 +11,13 @@ $lang = array(
 	// Navigation
 	"Home" => "Hem",
 	"Sensors" => "Sensorer",
-	"Chart" => "Graf",
+	"Chart" => "Grafer",
 	"Report" => "Rapport",
 	"Lights" => "Ljus",
 	"Settings" => "Inställningar",
 	"Log out" => "Logga ut",
+	"Return" => "Gå tillbaka",
+  	"Switch to" => "Byt till",
 
 	"Page settings" => "Sidinställningar",
 	"Users" => "Användare",
@@ -67,8 +69,8 @@ $lang = array(
 	"Jump description" => "Hoppa över valda nummer av loggad tid. Temperaturen loggas var 15:e minut, så ett hopp på 4 kommer att visa ett resultat på 1 timme. 4*24=96 för en dag.",
 	"XML URL" => "XML URL",
 	"Description" => "Beskrivning",
-	"Select chart" => "Velg graf",
-	"Default chart" => "Bruk standard graf",
+	"Select chart" => "Välj graf",
+	"Default chart" => "Använd standard graf",
 	"Chart max days" => "Visa graf för max dagar tillbaka i tiden",
 
 
@@ -79,17 +81,18 @@ $lang = array(
 	"Token" => "Token",
 	"Token secret" => "Token secret",
 	"Telldus connection test" => "Telldus anslutningstest",
-	"Sync lists everytime" => "Synk listar varje gång",
-	"List synced" => "listan synkroniserat",
+	"Sync lists everytime" => "Synka listor varje gång",
+	"List synced" => "Listan synkroniserad",
 
 
 	// Temperature & chart
 	"Latest readings" => "Senaste avläsningar",
 	"Temperature" => "Temperatur",
 	"Humidity" => "Fuktighet",
-	"Combine charts" => "Kombinerade grafer",
+	"Combine charts" => "Kombinerad graf",
 	"Split charts" => "Delade grafer",
 	"View chart" => "Visa graf",
+  	"Temp now" => "Nuvarande temperatur",
 
 
 	// Sensors
@@ -144,13 +147,13 @@ $lang = array(
 	"Max" => "Max",
 	"Min" => "Min",
 	"Avrage" => "Medel",
-	"Stop" => "Stop",
+	"Stop" => "Stopp",
 	"Data" => "Data",
 	"ID" => "ID",
 	"Name" => "Namn",
 	"Ignored" => "Ignorerad",
 	"Client" => "Klient",
-	"Client name" => "Klient namn",
+	"Client name" => "Klientnamn",
 	"Online" => "Online",
 	"Editable" => "Redigerbar",
 	"Last update" => "Senast uppdaterad",
@@ -174,16 +177,15 @@ $lang = array(
 	"Now" => "Nu",
 	"Action" => "Action",
 
-		// send warning IF temperature IS more/less THAN   / FOR sensor ...
-		"If" => "If",
-		"Is" => "Is",
-		"Than" => "Than",
-		"For" => "For",
+	// send warning IF temperature IS more/less THAN   / FOR sensor ...
+	"If" => "Om",
+	"Is" => "Är",
+	"Than" => "Då",
+	"For" => "För",
 
 
 	// Time (ago)
 	"since" => "sedan",
-
 	"secound" => "sekund",
 	"minute" => "minut",
 	"hour" => "timme",
