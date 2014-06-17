@@ -1,7 +1,6 @@
 <script src="lib/packages/Highstock-2.0.1/js/highstock.js"></script>
 <script src="lib/packages/Highstock-2.0.1/js/modules/exporting.js"></script>
 
-
 <?php
 
 	// Set how long back you want to pull data
