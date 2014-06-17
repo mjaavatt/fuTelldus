@@ -1,5 +1,5 @@
-<script src="lib/packages/Highstock-1.3.1/js/highstock.js"></script>
-<script src="lib/packages/Highstock-1.3.1/js/modules/exporting.js"></script>
+<script src="lib/packages/Highcharts-4.0.1/js/highcharts.js"></script>
+<script src="lib/packages/Highcharts-4.0.1/js/modules/exporting.js"></script>
 
 <?php
 
