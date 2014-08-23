@@ -1,14 +1,8 @@
 <?php
 
-
-	
-
-	
 	/* Get parameters
 	--------------------------------------------------------------------------- */
 	if (isset($_GET['id'])) $getID = clean($_GET['id']);
-
-
 
 	/* Max, min avrage
     --------------------------------------------------------------------------- */
@@ -16,13 +10,9 @@
     $sensorResults = $mysqli->query("SELECT * FROM ".$db_prefix."sensors WHERE sensor_id='$getID' LIMIT 1");
     $db_sensor = $sensorResults->fetch_array();
 
-
-
-    /* Headline
+   /* Headline
 	--------------------------------------------------------------------------- */
 	echo "<h3>{$lang['Sensor']}: {$db_sensor['name']}</h3>";
-
-
 
 	/* Public
 	--------------------------------------------------------------------------- */
@@ -33,16 +23,10 @@
 		}
 
 		else {
-			echo "<a class='btn btn-inverse' href='?page=sensors_exec&action=setSensorPublic&id=$getID'>{$lang['Non public']}</a>";
+			echo "<a class='btn btn-default' href='?page=sensors_exec&action=setSensorPublic&id=$getID'>{$lang['Non public']}</a>";
 		}
 
-
 	echo "</div>";
-
-
-
-
-
 
 	/* Max, min avrage
     --------------------------------------------------------------------------- */
@@ -72,8 +56,6 @@
                 echo "</tr>";
 
 
-
-
                 // Humidity
                 if ($sensorData['AVG(humidity_value)'] > 0) {
                     echo "<tr>";
@@ -96,16 +78,9 @@
                     echo "</tr>";
                 }
 
-
-
             echo "</tbody>";
         echo "</table>";
     echo "</div>";
-
-
-
-
-
 
     echo "<div class='well'>";
 
@@ -115,14 +90,10 @@
 		$params = array('id'=> $getID);
 		$response = $consumer->sendRequest(constant('REQUEST_URI').'/sensor/info', $params, 'GET');
 
-
-
 		/* Get and extract the XML data
 		--------------------------------------------------------------------------- */
 		$xmlString = $response->getBody();
 		$xmldata = new SimpleXMLElement($xmlString);
-
-
 
 		echo "<table class='table table-striped table-hover'>";
 			echo "<tbody>";
@@ -189,20 +160,13 @@
 		echo "</table>";
 	echo "</div>";
 
-
-	
 	echo "<div style='text-align:right;'>";
-		echo "<a style='margin-right:15px;' target='_blank' href='./public/chart.php?id=$getID'>Public chart</a>";
+		echo "<a style='margin-right:15px;' target='_blank' href='./public/?page=chart&id=$getID'>Public chart</a>";
 		echo "<a style='margin-right:15px;' target='_blank' href='./public/xml_sensor.php?sensorID=$getID'>XML Latest values</a>";
 		echo "<a style='margin-right:15px;' target='_blank' href='./public/xml_sensor_log.php?sensorID=$getID'>XML Values last day</a>";
 	echo "</div>";
 
 ?>
-
-
-
-
-
 
 <h3><?php echo $lang['Latest readings']; ?></h3>
 

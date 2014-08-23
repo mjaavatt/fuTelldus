@@ -1,5 +1,5 @@
-<script src="../lib/packages/Highstock-2.0.1/js/highstock.js"></script>
-<script src="../lib/packages/Highstock-2.0.1/js/modules/exporting.js"></script>
+<script src="../lib/packages/Highcharts-4.0.3/js/highcharts.js"></script>
+<script src="../lib/packages/Highcharts-4.0.3/js/modules/exporting.js"></script>
 
 <div class="container">
 <?php
@@ -7,25 +7,23 @@
 /* Get/set parameters
 --------------------------------------------------------------------------- */
 if (isset($_GET['id'])) {
-$getID = clean($_GET['id']);
+	$getID = clean($_GET['id']);
+	$name=clean($_GET['name']);
+	$clientname=clean($_GET['clientname']);
 	} else {
 	echo "<p>Sensor ID is missing...</p>";
 	exit();
 }
-$showFromDate = time() - 86400 * $config['chart_max_days'];; // 864000 => 24 hours * 10 days
-
-/* TEMP SENSOR 01: Get sensors
---------------------------------------------------------------------------- */
-$query = "SELECT * FROM ".$db_prefix."sensors WHERE sensor_id='$getID'";
-$result = $mysqli->query($query);
-$row = $result->fetch_array();
-$sensorID = trim($row['sensor_id']);
+$showFromDate = time() - 86400;// * $config['chart_max_days'];; // 864000 => 24 hours * 10 days
 
 echo "<div style='margin-bottom:25px;'><div style='text-align:center;'>";
-echo "<h4>{$row['name']}</h4>";
-echo "<h5 style='margin-left:10px;'>{$row['clientname']}</h5></div>";
-echo "<div style='float:left; margin-top:-45px; margin-left:15px;'><a class='btn' href='index.php'><-- ".$lang['Return']."</a></div></div>";
-echo "<div id='test' style='height: 650px; margin: 0 auto'></div>";
+echo "<h5>$clientname</h5></div>";
+
+echo "<div class='btn-group'>";
+	echo "<a href='index.php' class='btn btn-default active' role='button'><span class='glyphicon glyphicon-arrow-left'></span> {$lang['Return']}</a>";
+echo "</div>";
+
+echo "<div id='container' style='height: 650px; margin: 0 auto'></div>"; // tells where to put the chart
 
 unset($temp_values);
 $joinValues = "";
@@ -38,6 +36,7 @@ unset ($sensorDataNow);
 --------------------------------------------------------------------------- */
 $queryS = "SELECT * FROM ".$db_prefix."sensors_log WHERE sensor_id='$getID' AND time_updated > '$showFromDate' ORDER BY time_updated ASC ";
 $resultS = $mysqli->query($queryS);
+$k=1;
 
 while ($sensorData = $resultS->fetch_array()) {
 	$db_tempValue = trim($sensorData["temp_value"]);
@@ -47,23 +46,27 @@ while ($sensorData = $resultS->fetch_array()) {
 	$temp_values[]        = "[" . $timeJS . "," . round($db_tempValue, 2) . "]";	//create an array with temperature values rounded to 2 desimals
 	$hum_values[]         = "[" . $timeJS . "," . round($db_humValue, 2) . "]";      // do something with values
 	$sensorDataNow[]=$sensorData["humidity_value"];
+	if ($k==1) {
+      $time_start=$sensorData["time_updated"];
+      $k++;
+    };
+	$time_stop=$sensorData["time_updated"];
 }
 
 $joinValues = join($temp_values, ',');
 $joinhumValues = join($hum_values, ',');      // do something more with values
 if ($sensorDataNow["[humidity_value]">0]) $showHumidity=1;
 
+echo "<h5><b>" . $lang['Total'] . " " . $lang['since'] . " " . date("Y-m-d H:i", $time_start) . " " . strtolower($lang['To']) . " " . date("Y-m-d H:i", $time_stop) . "</b></h5>";
 /* Max, min avrage
 --------------------------------------------------------------------------- */
-echo "<h5>".$lang['Total']."</h5>";
-
-$queryS = "SELECT AVG(temp_value), MAX(temp_value), MIN(temp_value), AVG(humidity_value), MAX(humidity_value), MIN(humidity_value) FROM ".$db_prefix."sensors_log WHERE sensor_id='$sensorID' AND time_updated > '$showFromDate'";
+$queryS = "SELECT AVG(temp_value), MAX(temp_value), MIN(temp_value), AVG(humidity_value), MAX(humidity_value), MIN(humidity_value) FROM ".$db_prefix."sensors_log WHERE sensor_id='$getID' AND time_updated > '$showFromDate'";
 $resultS = $mysqli->query($queryS);
 $sensorData = $resultS->fetch_array();
 
 /* Last measurement
 --------------------------------------------------------------------------- */
-$queryS = "SELECT time_updated, temp_value, humidity_value FROM ".$db_prefix."sensors_log WHERE sensor_id='$sensorID' ORDER BY time_updated DESC";
+$queryS = "SELECT time_updated, temp_value, humidity_value FROM ".$db_prefix."sensors_log WHERE sensor_id='$getID' ORDER BY time_updated DESC LIMIT 1";
 $resultS = $mysqli->query($queryS);
 $sensorDataNow = $resultS->fetch_array();
 
@@ -148,7 +151,7 @@ Highcharts.setOptions({
     	useUTC: false
     }
 });
-    $('#test').highcharts('StockChart', {
+    $('#container').highcharts({
 
 		chart: {
             type: 'spline',
@@ -159,68 +162,29 @@ Highcharts.setOptions({
         },
 
         title: {
-            text: '{$row["name"]}'
+            text: '{$name}'
         },
 
-        plotOptions: {
-            spline: {
-                marker: {
-                    enabled: false //hides the datapoints marker
-                },
-            },
-        },
+	    plotOptions: {
+	    	spline: {
+	    		gapSize: 2
+	    	}
+	    },
 
-        rangeSelector: {
-            enabled: true,
-            buttons: [{
-                type: 'hour',
-                count: 1,
-                text: '1h'
-            }, {
-                type: 'hour',
-                count: 12,
-                text: '12h'
-            }, {
-                type: 'day',
-                count: 1,
-                text: '1d'
-            }, {
-                type: 'week',
-                count: 1,
-                text: '1w'
-            }, {
-                type: 'month',
-                count: 1,
-                text: '1m'
-            }, {
-                type: 'month',
-                count: 6,
-                text: '6m'
-            }, {
-                type: 'year',
-                count: 1,
-                text: '1yr'
-            }, {
-                type: 'all',
-                text: 'All'
-            }],
-            selected: 2
-        },
-
-        legend: {
-            align: "center",
-            layout: "horizontal",
-            enabled: true,
-            verticalAlign: "bottom",
+		legend: {
+			align: "center",
+			layout: "horizontal",
+			enabled: true,
+			verticalAlign: "bottom",
 			borderRadius: 5,
 			borderWidth: 1,
 			shadow: true,
 			borderColor: 'silver'
-        },
+		},
 
-        xAxis: {
-            type: 'datetime',
-        },
+		xAxis: {
+			type: 'datetime',
+		},
 		
         yAxis: [{
 			opposite: false,
@@ -236,8 +200,7 @@ Highcharts.setOptions({
                     color: '#777'
                 },
             },
-        }, 
-				{
+        }, {
             opposite: true, //puts the yAxis for humidity on the right-hand side
             showEmpty: false, //hides the axis if data not shown
             title: { // added humidity yAxis
@@ -263,5 +226,5 @@ Highcharts.setOptions({
 </script>
 
 end;
-
+echo "</div>";
 ?>

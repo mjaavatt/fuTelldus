@@ -1,12 +1,9 @@
 <?php
 
-
 	/* Get parameters
 	--------------------------------------------------------------------------- */
 	if (isset($_GET['id'])) $getID = clean($_GET['id']);
 	if (isset($_GET['action'])) $action = clean($_GET['action']);
-
-
 
 	/* Set parameters
 	--------------------------------------------------------------------------- */
@@ -17,7 +14,7 @@
 
 	    $sensorID = $row['sensor_id'];
 	    $direction = $row['direction'];
-	    $warning_value = $row['warning_value'];
+	    $warningValue = $row['warning_value'];
 	    $type = $row['type'];
 	    $repeat_alert = $row['repeat_alert'];
 	    $device = $row['device'];
@@ -34,205 +31,154 @@
 		$mail_secondary = "";
 	}
 
-
-
-	
-	echo "<h4>".$lang['Schedule']."</h4>";
-
-
-	echo "<div style='float:right; margin-top:-35px; margin-right:15px;'>";
-		echo "<a class='btn btn-success' href='?page=settings&view=schedule&action=add'>{$lang['Create new']}</a>";
+	echo "<h3>".$lang['Schedule']."</h3>";
+echo "<fieldset>";
+	echo "<div class='pull-right'>";
+		echo "<div class='btn-group'>";
+			echo "<a class='btn btn-success' href='?page=settings&view=schedule&action=add' role='button'>".$lang['Create new']."</a>";
+		echo "</div>";
 	echo "</div>";
+echo "</fieldset>";
+echo "</br>";
 
 
 	if (isset($_GET['msg'])) {
-		if ($_GET['msg'] == 01) echo "<div class='alert alert-info'>".$lang['Data saved']."</div>";
-		elseif ($_GET['msg'] == 02) echo "<div class='alert alert-error'>".$lang['Deleted']."</div>";
+		if ($_GET['msg'] == 01) echo "<div class='alert alert-info' role='alert'>".$lang['Data saved']."</div>";
+		elseif ($_GET['msg'] == 02) echo "<div class='alert alert-error' role='alert'>".$lang['Deleted']."</div>";
 	}
-
-
-
-
-
-
 
 	/* Form
 	--------------------------------------------------------------------------- */
 	if ($action == "add" || $action == "edit") {
-
 		if ($action == "edit") {
-			echo "<div class='alert'>";
-			echo "<form action='?page=settings_exec&action=updateSchedule&id=$getID' method='POST'>";
+			echo "<div class='alert alert-warning' role='alert'>";
+			echo "<form class='form-inline' role='form' action='?page=settings_exec&action=updateSchedule&id=$getID' method='POST'>";
 		} else {
-			echo "<div class='well'>";
-			echo "<form action='?page=settings_exec&action=addSchedule' method='POST'>";
-		}
+			echo "<div class='alert alert-info' role='alert'>";
+			echo "<form class='form-inline' role='form' action='?page=settings_exec&action=addSchedule' method='POST'>";
+		} ?>
 
+	<fieldset>
+	<div class="form-group"> <!-- Sensor -->
+		<label for="sensorID"><?php echo $lang['Sensor'] ?></label>
+		<?php
+		$query = "SELECT * FROM ".$db_prefix."sensors WHERE user_id='".$user['user_id']."' AND monitoring='1' ORDER BY name ASC LIMIT 100";
+		$result = $mysqli->query($query);
+		echo "<select class='form-control' id='sensorID' name='sensorID'>";
+			while ($row = $result->fetch_array()) {
+				if ($sensorID == $row['sensor_id'])
+					echo "<option value='{$row['sensor_id']}' selected='selected'>{$row['sensor_id']}: {$row['name']}</option>";
+				else
+					echo "<option value='{$row['sensor_id']}'>{$row['sensor_id']}: {$row['name']}</option>";
+				};
+		echo "</select>";
+  		?>
+	</div> <!-- /Sensor -->
+	</fieldset>
 
-			echo "<table width='100%'>";
+	<fieldset>
+	<div class="form-group"> <!-- Higher / Lower -->
+		<label for="direction"><?php echo $lang['Type'] ?></label>
+		<select class="form-control" id="direction" name="direction">
+			<?php
+			if ($direction == "less") $directionSelectedLess = "selected='selected'";
+			if ($direction == "more") $directionSelectedMore = "selected='selected'";
+			echo "<option value='more' $directionSelectedMore>{$lang['Higher than']}</option>";
+			echo "<option value='less' $directionSelectedLess>{$lang['Lower than']}</option>";
+			?>
+		</select>
+	</div>
+	<div class="form-group">
+		<label for="warningValue"></label>
+		<input class="form-control" type="text" id="warningValue" name="warningValue" value="<?php echo $warningValue ?>">
+	</div>
+	<div class="form-group">
+		<label for="type"></label>
+		<select class="form-control" id="type" name="type">
+			<?php
+			if ($type == "celsius") $typeSelectedCelsius = "selected='selected'";
+			if ($type == "humidity") $typeSelectedHumidity = "selected='selected'";
+			?>
+			<option value="celsius" $typeSelectedCelsius>&deg; <?php echo $lang['Celsius'] ?></option>
+			<option value="Humidity" $typeSelectedHumidity>% <?php echo $lang['Humidity'] ?></option>
+		</select>
+	</div> <!-- /Higher / Lower -->
+	</fieldset>
+</br>
+  	<fieldset>
+	<div class="form-group"> <!-- Device action -->
+		<label><h4><?php echo $lang['Device action'] ?></h4></label>
+		</br>
+		<label for="deviceID"><?php echo $lang['Devices'] ?></label>
+		<?php
+		$query  = "SELECT * FROM ".$db_prefix."devices WHERE user_id='".$user['user_id']."' ORDER BY name ASC LIMIT 100";
+		$result = $mysqli->query($query);
+		echo "<select class='form-control' id='deviceID' name='deviceID'>";
+			while ($row = $result->fetch_array()) {
+			if ($device == $row['device_id'])
+				echo "<option value='{$row['device_id']}' selected='selected'>{$row['device_id']}: {$row['name']}</option>";
+			else
+				echo "<option value='{$row['device_id']}'>{$row['device_id']}: {$row['name']}</option>";
+			};
+		echo "</select>";
+  		?>
+		<select class="form-control" id="device_action" name="device_action">
+			<option><?php echo $lang['On'] ?></option>
+			<option><?php echo $lang['Off'] ?></option>
+		</select>
+	</div> <!-- /Device action -->
+	</fieldset>
+  
+	<fieldset>
+	<div class="form-group"> <!-- Notifications -->
+		<label for="repeat"><?php echo $lang['Notifications'] ?></label>
+		<div class="input-group">
+			<span class="input-group-addon"><?php echo $lang['Repeat every'] ?></span>
+			<input type="text" class="form-control" id="repeat" name="repeat"  value="<?php echo $repeat_alert ?>">
+			<span class="input-group-addon"><?php echo $lang['minutes'] ?></span>
+		</div>
+	</div> <!-- /Notifications -->
+    </fieldset>
+  
+	<fieldset>
+	<div class="form-group"> <!-- Send to -->
+		<label for="sendTo_mail"><?php echo $lang['Send to'] ?></label>
+		<div class="checkbox">
+			<?php
+			if ($send_to_mail == 1) $sendToMailChecked = "checked='checked'";
+			echo "<input type='checkbox' id='sendTo_mail' name='sendTo_mail' value='1' $sendToMailChecked>{$lang['Email']}";
+			?>
+		</div>
+	</div> <!-- /Send to -->
+	</fieldset>
 
-				// Sensor
-				echo "<tr>";
-					echo "<td>{$lang['Sensor']}</td>";
-					echo "<td>";
-						$query = "SELECT * FROM ".$db_prefix."sensors WHERE user_id='".$user['user_id']."' AND monitoring='1' ORDER BY name ASC LIMIT 100";
-		   				$result = $mysqli->query($query);
+	<fieldset>
+	<div class="form-group"> <!-- Primary mail -->
+		<label for="primary_mail"><?php echo "{$lang['Primary']} {$lang['Email']}" ?></label>
+		<input type="email" class="form-control" id="primary_mail" name="mail_primary" value="<?php echo $mail_primary ?>">
+	</div> <!-- /Primary mail -->
+	<div class="form-group"> <!-- Secondary mail -->
+		<label for="secondary_mail"><?php echo "{$lang['Secondary']} {$lang['Email']}" ?></label>
+		<input type="email" class="form-control" id="secondary_mail" name="mail_secondary" value="<?php echo $mail_secondary ?>">
+	</div> <!-- /Primary mail -->
+    </fieldset>
 
-		   				echo "<select style='width:180px;' name='sensorID'>";
-		   				while ($row = $result->fetch_array()) {
-		   					if ($sensorID == $row['sensor_id'])
-		   						echo "<option value='{$row['sensor_id']}' selected='selected'>{$row['sensor_id']}: {$row['name']}</option>";
-
-		   					else
-		   						echo "<option value='{$row['sensor_id']}'>{$row['sensor_id']}: {$row['name']}</option>";
-		   				}
-		   				echo "</select>";
-					echo "</td>";
-				echo "</tr>";
-
-
-				// Higher / lower
-				echo "<tr>";
-					echo "<td>{$lang['Type']}</td>";
-					echo "<td>";
-
-						echo "<select style='width:120px; margin-right:5px;' name='direction'>";
-							if ($direction == "less") $directionSelectedLess = "selected='selected'";
-							if ($direction == "more") $directionSelectedMore = "selected='selected'";
-
-							echo "<option value='more' $directionSelectedMore>{$lang['Higher than']}</option>";
-							echo "<option value='less' $directionSelectedLess>{$lang['Lower than']}</option>";
-						echo "</select>";
-
-						echo "<input style='width:30px; margin-right:5px;' type='text' name='warningValue' id='warningValue' value='$warning_value' />";
-
-						echo "<select style='width:120px;' name='type'>";
-							if ($type == "celsius") $typeSelectedCelsius = "selected='selected'";
-							if ($type == "humidity") $typeSelectedHumidity = "selected='selected'";
-
-							echo "<option value='celsius' $typeSelectedCelsius>&deg; ({$lang['Celsius']})</option>";
-							echo "<option value='humidity' $typeSelectedHumidity>% ({$lang['Humidity']})</option>";
-						echo "</select>";
-
-					echo "</td>";
-				echo "</tr>";
-
-
-
-
-				
-
-
-				echo "<tr><td colspan='2'><br /></td></tr>"; // Space
-
-
-
-
-
-
-				echo "<tr><td colspan='2'><h5>{$lang['Device action']}</h5></td></tr>"; // Headline
-
-
-				// Device
-				echo "<tr>";
-					echo "<td>{$lang['Devices']}</td>";
-					echo "<td>";
-						$query = "SELECT * FROM ".$db_prefix."devices WHERE user_id='".$user['user_id']."' ORDER BY name ASC LIMIT 100";
-		   				$result = $mysqli->query($query);
-
-		   				echo "<select style='width:250px;' name='deviceID'>";
-		   					echo "<option value=''>-- {$lang['No device action']}</option>";
-
-			   				while ($row = $result->fetch_array()) {
-			   					if ($device == $row['device_id'])
-			   						echo "<option value='{$row['device_id']}' selected='selected'>{$row['device_id']}: {$row['name']}</option>";
-
-			   					else
-			   						echo "<option value='{$row['device_id']}'>{$row['device_id']}: {$row['name']}</option>";
-			   				}
-		   				echo "</select>";
-
-
-		   				echo "<select style='width:70px; margin-left:10px;' name='device_action'>";
-		   					echo "<option value='1'>{$lang['On']}</option>";
-		   					echo "<option value='0'>{$lang['Off']}</option>";
-		   				echo "</select>";
-
-					echo "</td>";
-				echo "</tr>";
-
-
-
-				echo "<tr><td colspan='2'><br /></td></tr>"; // Space
-
-
-
-
-
-
-
-				echo "<tr><td colspan='2'><h5>{$lang['Notifications']}</h5></td></tr>"; // Headline
-
-
-				// Value
-				echo "<tr>";
-					echo "<td>{$lang['Repeat every']}</td>";
-					echo "<td>";
-						echo "<input style='width:35px;' type='text' name='repeat' id='repeat' value='$repeat_alert' /> {$lang['minutes']}";
-					echo "</td>";
-				echo "</tr>";
-
-				// Send to
-				echo "<tr>";
-					echo "<td>{$lang['Send to']}</td>";
-					echo "<td>";
-						echo "<label class='checkbox'>";
-								if ($send_to_mail == 1) $sendToMailChecked = "checked='checked'";
-					          echo "<input type='checkbox' name='sendTo_mail' value='1' $sendToMailChecked> {$lang['Email']}";
-					        echo "</label>";
-					echo "</td>";
-				echo "</tr>";
-
-
-				// Primary mail
-				echo "<tr>";
-					echo "<td>{$lang['Primary']} {$lang['Email']}</td>";
-					echo "<td>";
-						echo "<input style='width:350px;' type='text' name='mail_primary' id='repeat' value='$mail_primary' />";
-					echo "</td>";
-				echo "</tr>";
-
-				// Secondary mail
-				echo "<tr>";
-					echo "<td>{$lang['Secondary']} {$lang['Email']}</td>";
-					echo "<td>";
-						echo "<input style='width:350px;' type='text' name='mail_secondary' id='repeat' value='$mail_secondary' />";
-					echo "</td>";
-				echo "</tr>";
-
-
-
-				// Submit
-				echo "<tr>";
-					echo "<td colspan='2'>";
-						echo "<div style='text-align:right;'>";
-							if ($action == "edit") echo "<a class='btn' href='?page=settings&view=schedule'>{$lang['Cancel']}</a> &nbsp; ";
-							echo "<input class='btn btn-primary' type='submit' name='submit' value='".$lang['Save data']."' />";
-						echo "</div>";
-					echo "</td>";
-				echo "</tr>";
-
-			echo "</table>";
-		echo "</form>";
-		echo "</div>";
+</br>
+  
+  	<fieldset>
+	<div class="form-group"> <!-- Submit -->
+		<div style="pull-right">
+			<?php
+			if ($action == "edit") echo "<a class='btn btn-warning' href='?page=settings&view=schedule'>{$lang['Cancel']}</a> &nbsp";
+			?>
+			<input class="btn btn-primary" type="submit" id="submit" name="submit" value=<?php echo $lang['Save data'] ?>>
+		</div>
+	</div> <!-- /Submit -->
+	</fieldset>
+</form>
+<?php
 	}
-
-
-
-
-
-
-
+echo "</div>";
 
 	/* Show notifications
 	--------------------------------------------------------------------------- */
@@ -245,6 +191,7 @@
     $numRows = $result->num_rows;
 
     if ($numRows > 0) {
+		echo "<div class='table-responsive'>";
 
     	echo "<table class='table table-striped table-hover'>";
 			echo "<thead>";
@@ -259,22 +206,14 @@
 			echo "</thead>";
 			
 			echo "<tbody>";
-
 		    	while($row = $result->fetch_array()) {
-
 		    		echo "<tr>";
-
-
 		    			echo "<td>";
-
 		    				// Sensorname
 		    				echo "#{$row['sensor_id']}: {$row['name']}<br />";
-
-
 		    				// Rule description
 		    				if ($row['direction'] == "less") $directionDesc = $lang['Lower than'];
 		    				elseif ($row['direction'] == "more") $directionDesc = $lang['Higher than'];
-
 		    				if ($row['type'] == "celsius") {
 		    					$typeDesc = $lang['Temperature'];
 		    					$unit = "&deg;";
@@ -283,62 +222,46 @@
 		    					$typeDesc = $lang['Humidity'];
 		    					$unit = "%";
 		    				}
-
-		    				echo "{$lang['If']} <b>$typeDesc</b> ".strtolower($lang['Is'])." <b>$directionDesc</b> ".strtolower($lang['Than'])." <b>{$row['warning_value']}" . $unit . "</b>";
-
+		    				echo "{$lang['If']} <b>$typeDesc</b> ".strtolower($lang['Is'])." <b>$directionDesc</b>  <b>{$row['warning_value']}" . $unit ."C ".strtolower($lang['Than'])."</b>";
 		    				if (!empty($row['device'])) {
 		    					$getDeviceName = getField("name", "".$db_prefix."devices", "WHERE device_id='{$row['device']}'");
-			    				
 		    					echo "<br />";
 			    				echo "$getDeviceName";
 			    				if ($row['device_set_state'] == 1) echo " &nbsp; ({$lang['On']})";
 			    				elseif ($row['device_set_state'] == 0) echo " &nbsp; ({$lang['Off']})";
 			    			}
 		    			echo "</td>";
-
-
 		    			// Send to mail
 		    			echo "<td style='text-align:center;'>";
 		    				if ($row['send_to_mail'] == 1) echo "<img style='height:16px;' src='images/metro_black/check.png' alt='yes' />";
 		    				else echo "<img style='height:16px;' src='images/metro_black/cancel.png' alt='no' />";
 		    			echo "</td>";
-
-
 		    			// Repeat every
 		    			echo "<td>";
 		    				echo "{$row['repeat_alert']} {$lang['minutes']}";
 		    			echo "</td>";
-
-
 		    			// Time since last warning
 		    			echo "<td>";
 		    				if ($row['last_warning'] > 0) echo ago($row['last_warning']);
 		    			echo "</td>";
-
-
 		    			// Toggle tools
 		    			echo "<td>";
 							echo "<div class='btn-group'>";
-								echo "<a class='btn dropdown-toggle' data-toggle='dropdown' href='#''>";
+								echo "<button type='button class='btn btn-default dropdown-toggle' data-toggle='dropdown'>";
 									echo "<span class='caret'></span>";
-								echo "</a>";
-
-								echo "<ul class='dropdown-menu'>";
-					    			echo "<li><a href='?page=settings&view=schedule&action=edit&id={$row['notification_id']}'>Edit</a></li>";
-					    			echo "<li><a href='?page=settings_exec&action=deleteNotification&id={$row['notification_id']}'>Delete</a></li>";
+								echo "</button>";
+								echo "<ul class='dropdown-menu pull-right'>";
+					    			echo "<li><a href='?page=settings&view=schedule&action=edit&id={$row['notification_id']}'>".$lang['Edit']."</a></li>";
+					    			echo "<li><a href='?page=settings_exec&action=deleteSchedule&id={$row['notification_id']}'>".$lang['Delete']."</a></li>";
 								echo "</ul>";
 							echo "</div>";
 		    			echo "</td>";
-
 		    		echo "</tr>";
-
 		    	}
-
     		echo "</tbody>";
     	echo "</table>";
+		echo "</div>";
     }
-
     else echo "<div class='alert'>{$lang['Nothing to display']}</div>";
-
 
 ?>

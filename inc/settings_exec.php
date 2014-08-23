@@ -6,17 +6,14 @@
 	if (isset($_GET['id'])) $getID = clean($_GET['id']);
 	if (isset($_GET['action'])) $action = clean($_GET['action']);
 
-
-
-
-
 	/* Save usersettings
 	--------------------------------------------------------------------------- */
 	if ($action == "userAdd") {
 
 		// Get POST data
 		$inputEmail = clean($_POST['inputEmail']);
-		$admin = clean($_POST['admin']);
+		$language = clean($_POST['language']);
+		$admin = clean($_POST['adminChecked']);
 
 		$newPassword = clean($_POST['newPassword']);
 		$newCPassword = clean($_POST['newCPassword']);
@@ -30,11 +27,11 @@
 		$token_key = clean($_POST['token_key']);
 		$token_secret_key = clean($_POST['token_secret_key']);
 
-
 		// Insert user
 		$query = "INSERT INTO ".$db_prefix."users SET 
 					mail='".$inputEmail."', 
 					password='".$cryptPW."', 
+					language='".$language."', 
 					admin='".$admin."', 
 					chart_type='".$selectChart."'";
 		$result = $mysqli->query($query);
@@ -57,14 +54,9 @@
 		exit();
 	}
 
-
-
-
-
 	/* Save usersettings
 	--------------------------------------------------------------------------- */
 	if ($action == "userSave") {
-
 
 		// Get POST data
 		$inputEmail = clean($_POST['inputEmail']);
@@ -81,7 +73,6 @@
 		$private_key = clean($_POST['private_key']);
 		$token_key = clean($_POST['token_key']);
 		$token_secret_key = clean($_POST['token_secret_key']);
-
 
 		// Update userdata
 		$query = "UPDATE ".$db_prefix."users SET 
@@ -101,39 +92,29 @@
 					token_secret='".$token_secret_key."'";
 		$result = $mysqli->query($query);
 
-
-
 		// Update password
 		if (!empty($newPassword)) {
-
 			// Check for password match
 			if ($newPassword != $newCPassword || empty($newPassword)) {
 				header("Location: ?page=settings&view=user&action=edit&id=$getID&msg=03");
 				exit();
 			}
-
-
 			else {
 				$newPassword = hash('sha256', $newPassword);
 
 				$query = "UPDATE ".$db_prefix."users SET password='".$newPassword."' WHERE user_id='".$getID."'";
 				$result = $mysqli->query($query);
 			}
-
 		} //end-if-password
-
 
 		// Redirect
 		header("Location: ?page=settings&view=user&action=edit&id=$getID&msg=01");
 		exit();
 	}
 
-
-
 	/* Delete user
 	--------------------------------------------------------------------------- */
 	if ($action == "userDelete") {
-		
 		$query = "DELETE FROM ".$db_prefix."users WHERE user_id='".$getID."'";
 		$result = $mysqli->query($query);
 
@@ -144,8 +125,6 @@
 		header("Location: ?page=settings&view=users&msg=03");
 		exit();
 	}
-
-
 
 	/* Save telldus config
 	--------------------------------------------------------------------------- */
@@ -186,20 +165,14 @@
 	}
 	*/
 
-
-
-
-
 	/* Save page config
 	--------------------------------------------------------------------------- */
 	if ($action == "saveGeneralSettings") {
-
 		// Get POST data
 		$pageTitle = clean($_POST['pageTitle']);
 		$mail_from = clean($_POST['mail_from']);
 		$chart_max_days = clean($_POST['chart_max_days']);
 		$language = clean($_POST['language']);
-
 
 		$query = "UPDATE ".$db_prefix."config SET config_value='".$pageTitle."' WHERE config_name LIKE 'pagetitle'";
 		$result = $mysqli->query($query);
@@ -213,22 +186,10 @@
 		$query = "UPDATE ".$db_prefix."config SET config_value='".$language."' WHERE config_name LIKE 'public_page_language'";
 		$result = $mysqli->query($query);
 
-
 		// Redirect
 		header("Location: ?page=settings&view=general&msg=01");
 		exit();
-
 	}
-
-
-
-
-
-
-
-	
-
-
 
 	/* Add XML-shared sensor
 	--------------------------------------------------------------------------- */
@@ -236,7 +197,6 @@
 		// Get POST data
 		$description = clean($_POST['description']);
 		$xml_url = clean($_POST['xml_url']);
-
 
 		// Insert telldus config
 		$query = "INSERT INTO ".$db_prefix."sensors_shared SET 
@@ -251,7 +211,6 @@
 		exit();
 	}
 
-
 	/* Delete XML-shared sensor
 	--------------------------------------------------------------------------- */
 	if ($action == "deleteSensorFromXML") {
@@ -263,13 +222,10 @@
 		exit();
 	}
 
-
 	/* Put on main
 	--------------------------------------------------------------------------- */
 	if ($action == "putOnMainSensorFromXML") {
-
 		$getCurrentValue = getField("show_in_main", "".$db_prefix."sensors_shared", "WHERE share_id='".$getID."'");
-
 		if ($getCurrentValue == 0) {
 			$query = "UPDATE ".$db_prefix."sensors_shared SET show_in_main='1' WHERE user_id='".$user['user_id']."' AND share_id='".$getID."'";
 			$result = $mysqli->query($query);
@@ -283,11 +239,9 @@
 		exit();
 	}
 
-
 	/* Disable XML-shared sensor
 	--------------------------------------------------------------------------- */
 	if ($action == "disableSensorFromXML") {
-
 		$getCurrentValue = getField("disable", "".$db_prefix."sensors_shared", "WHERE share_id='".$getID."'");
 
 		if ($getCurrentValue == 0) {
@@ -303,19 +257,9 @@
 		exit();
 	}
 
-
-
-
-
-
-
-
-
-
 	/* Add schedule
 	--------------------------------------------------------------------------- */
 	if ($action == "addSchedule") {
-		
 		// Get POST data
 		$sensorID = clean($_POST['sensorID']);
 		$direction = clean($_POST['direction']);
@@ -328,7 +272,6 @@
 
 		$deviceID = clean($_POST['deviceID']);
 		$device_action = clean($_POST['device_action']);
-
 
 		// Insert telldus config
 		$query = "INSERT INTO ".$db_prefix."schedule SET 
@@ -344,19 +287,15 @@
 					notification_mail_primary='". $mail_primary ."',
 					notification_mail_secondary='". $mail_secondary ."'";
 		$result = $mysqli->query($query);
-		
 
 		// Redirect
 		header("Location: ?page=settings&view=schedule&msg=01");
 		exit();
 	}
 
-
-
-	/* Delete schedule
+	/* Update schedule
 	--------------------------------------------------------------------------- */
 	if ($action == "updateSchedule") {
-
 		// Get POST data
 		$sensorID = clean($_POST['sensorID']);
 		$direction = clean($_POST['direction']);
@@ -369,7 +308,6 @@
 
 		$deviceID = clean($_POST['deviceID']);
 		$device_action = clean($_POST['device_action']);
-
 
 		// Update userdata
 		$query = "UPDATE ".$db_prefix."schedule SET 
@@ -386,18 +324,14 @@
 					WHERE notification_id='".$getID."'";
 		$result = $mysqli->query($query);
 
-
 		// Redirect
 		header("Location: ?page=settings&view=schedule&msg=01");
 		exit();
 	}
 
-
-
 	/* Delete schedule
 	--------------------------------------------------------------------------- */
 	if ($action == "deleteSchedule") {
-
 		$query = "DELETE FROM ".$db_prefix."schedule WHERE user_id='".$user['user_id']."' AND notification_id='".$getID."'";
 		$result = $mysqli->query($query);
 
@@ -405,7 +339,4 @@
 		header("Location: ?page=settings&view=schedule&msg=02");
 		exit();
 	}
-
-
-
 ?>

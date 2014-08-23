@@ -27,15 +27,15 @@
   
 
     <!-- Jquery -->
-    <script src="../lib/packages/jquery/jquery-1.9.1.min.js"></script>
+    <script src="../lib/packages/jquery/jquery-2.1.1.min.js"></script>
 
     <!-- Bootstrap framework -->
     <script src="../lib/packages/bootstrap/js/bootstrap.min.js"></script>
-    <link href="../lib/packages/bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="../lib/packages/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="../lib/packages/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!--  <link href="../lib/packages/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"> -->
 
 
-    <link href="css/pagestyle.css" rel="stylesheet">
+    <link href="css/signin.css" rel="stylesheet">
 
 
 </head>
@@ -44,12 +44,8 @@
 
 <div class="container">
 
-    
-
-
-    <form class="form-signin" action="login_exec.php" method="POST">
+	<form class="form-signin" role="form" action="login_exec.php" method="POST">
         <h2 class="form-signin-heading"><?php echo $config['pagetitle']; ?></h2>
-
         <?php
           if (isset($_GET['msg'])) {
               if ($_GET['msg'] == 01) echo "<div class='alert alert-error'>Wrong username and/or password</div>";
@@ -57,13 +53,12 @@
               if ($_GET['msg'] == 03) echo "<div class='alert alert-error'>No public sensors active</div>";
           }
         ?>
-
-        
-        <input type="text" class="input-block-level" name="mail" placeholder="Email address">
-        <input type="password" class="input-block-level" name="password" placeholder="Password">
+		
+        <input type="text" class="form-control" name="mail" placeholder="Email address">
+        <input type="password" class="form-control" name="password" placeholder="Password" required>
 
         <label class="checkbox">
-          <input type="checkbox" name="remember" value="1"> Remember me
+          <input type="checkbox" value="remember-me"> Remember me
         </label>
 
         <div class="pull-right">
@@ -78,13 +73,10 @@
               }
             ?>
 
-
-            <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+            <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
         </div>
 
-
         <div style="clear:both;"></div>
-
 
         <?php
           // Create a random key to secure the login from this form!
@@ -96,5 +88,9 @@
 
 </div> <!-- /container -->
 
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+	
 </body>
 </html>
