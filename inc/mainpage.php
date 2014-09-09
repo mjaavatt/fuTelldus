@@ -67,7 +67,7 @@
 	
 		/* My sensors
    		--------------------------------------------------------------------------- */
-		$query = "SELECT * FROM ".$db_prefix."sensors WHERE user_id='{$user['user_id']}' AND monitoring='1'";
+		$query = "SELECT * FROM ".$db_prefix."sensors WHERE user_id='{$user['user_id']}' AND monitoring='1' ORDER BY name";
 	    $result = $mysqli->query($query);
 
 	    while ($row = $result->fetch_array()) {
