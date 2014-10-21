@@ -4,13 +4,21 @@
   _____________________________________________________________________________
 
   	- Compare data from different times in a chart
-  	- Combine humidity charts (like temperature)
-  	- Highcharts
-
+ 
 
 
   CHANGELOG - fuTelldus
   _____________________________________________________________________________
+ 
+ 
+ 
+ 
+ 
+  	23.08.2014
+	---------------------------------------------------------------
+	CHANGES:
+	- Combined humidity charts
+	- Updated to Higcharts 4.0.3
 
 
 
