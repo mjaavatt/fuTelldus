@@ -11,21 +11,29 @@
     <title><?php echo $config['pagetitle']; ?></title>
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
+	<!-- Bootstrap framework -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>	
+	
 	<!-- Jquery -->
-	<script src="lib/packages/jquery/jquery-2.1.1.min.js"></script>
-	<script src="lib/packages/jquery-ui-1.11.0.custom/jquery-ui.min.js"></script>
-	<link href="lib/packages/jquery-ui-1.11.0.custom/jquery-ui.css" rel="stylesheet">
+	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+	<link href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
 	<script src="lib/packages/timeago_jquery/jquery.timeago.js"></script>
 	<?php
 		if ($defaultLang == "sw") echo "<script src=\"lib/packages/timeago_jquery/jquery.timeago.sw.js\"></script>";
 	?>
 
-	<!-- Bootstrap framework -->
-	<link href="lib/packages/bootstrap/css/bootstrap.css" rel="stylesheet">
-	<link href="css/pagestyle.css" rel="stylesheet">
-
+	<!-- For iPhone Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/thermometer.png">
+	<!-- For iPad: -->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/thermometer.png">
+	<!-- For iPhone: -->
+	<link rel="apple-touch-icon-precomposed" href="images/thermometer.png">
+	
 	<script type="text/javascript">
 		idleTime = 0;
 		
@@ -51,39 +59,24 @@
 	</script>
 	
 	<!-- Fa-strap -->
-	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
 </head>
 <body>
-<?php
-	/* Get sensors ID, name and clientname
-	--------------------------------------------------------------------------- */
-	$query = "SELECT * FROM ".$db_prefix."sensors WHERE user_id='{$user['user_id']}' AND monitoring='1'";
-	$result = $mysqli->query($query);
-
-	$count=0; // added counter to count the sensors
-	while ($row = $result->fetch_array()) {
-      $db_sensors[$count]=trim($row["name"]);
-      $db_sensors_id[$count]=trim($row["sensor_id"]);
-      $db_client[$count]=trim($row["clientname"]);
-      $count++;
-	}
-
-?>
 <div class="container">
 
 <nav class="navbar navbar-tabs navbar-default" style="margin-top:30px" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" style='color:#0088cc; font-weight:bold' href="index.php">fuTelldus</a>
-    </div>
+	<div class="container-fluid">
+	<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" style='color:#0088cc; font-weight:bold' href="index.php">fuTelldus</a>
+		</div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
 	<div class="collapse navbar-collapse" id="navbar">
@@ -106,12 +99,10 @@
 		<li class="<?php echo $navSettings_active; ?>"><a href="?page=settings"><?php echo "<i class='fa fa-cogs'></i> "; echo $lang['Settings']; ?></a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
-
-<?php		if (substr($_GET['page'],0,8) == "settings" && substr($_GET['view'], 0, 4) == "user") $profile_page = "active"; ?>
        		<li class="dropdown pull-right">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo "<span class='glyphicon glyphicon-off'></span> "; echo $lang['Signed in as']; echo ": "; echo $user['mail']; ?><b class="caret"></b></a>
-				<ul class="dropdown-menu pull-right-hidden-xs">
-					<li class="<?php echo $profile_page; ?>"><a href="?page=settings"><?php echo $lang['My profile']; ?></a></li>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="?page=settings"><?php echo $lang['My profile']; ?></a></li>
 					<li><a href="./public/index.php"><?php echo $lang['View public page']; ?></a></li>
 					<li class="divider"></li>
 					<li><a href="login/logout.php"><?php echo $lang['Log out']; ?></a></li>
@@ -138,7 +129,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-	<script src="lib/packages/bootstrap/js/bootstrap.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 	
 </body>
 </html>
