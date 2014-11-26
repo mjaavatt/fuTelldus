@@ -211,7 +211,7 @@ $lang = array(
 	"weeks" => "weeks",
 	"months" => "months",
 	"years" => "years",
-
+	"Remember me" => "Remember me",
 );
 
 ?>

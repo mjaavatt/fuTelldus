@@ -41,7 +41,7 @@ Close the timepicker when the window is scrolled. (Replicates ```<select>``` beh
 *default: false*
 
 - **disableTimeRanges**  
-Disable selection of certain time ranges. Input is an array of time pairs, like ```[['3:00am', '4:30am'], ['5:00pm', '8:00pm']]``  
+Disable selection of certain time ranges. Input is an array of time pairs, like ```[['3:00am', '4:30am'], ['5:00pm', '8:00pm']]``. The start of the interval will be disabled but the end won't.
 *default: []*
 
 - **disableTouchKeyboard**  
@@ -59,6 +59,8 @@ Force update the time to ```step``` settings as soon as it loses focus.
 - **lang**  
 Language constants used in the timepicker. Can override the defaults by passing an object with one or more of the following properties: decimal, mins, hr, hrs.  
 *default:* ```{
+	am: 'am',
+	pm: 'pm',
 	decimal: '.',
 	mins: 'mins',
 	hr: 'hr',
@@ -102,7 +104,7 @@ The amount of time, in minutes, between each item in the dropdown.
 *default: 30*
 
 - **timeFormat**  
-How times should be displayed in the list and input element. Uses [PHP's date() formatting syntax](http://php.net/manual/en/function.date.php). Characters can be escaped with a preceeding double slash (e.g. `H\\hi`). 
+How times should be displayed in the list and input element. Uses [PHP's date() formatting syntax](http://php.net/manual/en/function.date.php). Characters can be escaped with a preceeding double slash (e.g. `H\\hi`). Alternatively, you can specify a function instead of a string, to use completely custom time formatting. In this case, the format function receives a Date object and is expected to return a string.
 *default: 'g:ia'*
 
 - **typeaheadHighlight**  
@@ -147,7 +149,8 @@ Close the timepicker dropdown.
 Change the settings of an existing timepicker. Calling ```option``` on a visible timepicker will cause the picker to be hidden.
 
 	```javascript
-	$('#optionExample').timepicker({ 'timeFormat': 'g:ia' });
+	$('#optionExample').timepicker({ 'timeFormat': 'g:ia' }); // initialize the timepicker sometime earlier in your code
+	...
 	$('#optionExample').timepicker('option', 'minTime', '2:00am');
 	$('#optionExample').timepicker('option', { 'minTime': '4:00am', 'timeFormat': 'H:i' });
 	```
@@ -205,7 +208,7 @@ Sample markup with class names:
 ```html
 <input value="5:00pm" class="ui-timepicker-input" type="text">
 ...
-<div class="ui-timepicker-wrapper optional-custom-classname" tabindex="-1">
+<div class="ui-timepicker-wrapper ui-timepicker-positioned-top optional-custom-classname" tabindex="-1">
 	<ul class="ui-timepicker-list">
 		<li>12:00am</li>
 		<li>12:30am</li>
@@ -220,6 +223,8 @@ Sample markup with class names:
 	</ul>
 </div>
 ```
+
+The `ui-timepicker-positioned-top` class will be applied only when the dropdown is positioned above the input.
 
 ## Packaging
 

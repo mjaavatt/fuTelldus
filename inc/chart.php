@@ -1,12 +1,16 @@
-<script src="lib/packages/Highcharts-4.0.3/js/highcharts.js"></script>
-<script src="lib/packages/Highcharts-4.0.3/js/modules/exporting.js"></script>
+<!-- <script src="lib/packages/Highcharts-4.0.4/js/highcharts.js"></script>
+<script src="lib/packages/Highcharts-4.0.4/js/modules/exporting.js"></script> -->
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script src="lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.min.js" ></script>
 <link href="lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.css" rel="stylesheet">
 <script src="lib/packages/jquery/jquery.ui.datepicker-sv.js"></script> <!-- Swedish languagefile for jquery-datepicker -->
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.2/js/bootstrap-select.min.js" ></script>
-<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.2/css/bootstrap-select.min.css" rel="stylesheet">
+<!-- Initialize Bootstrap-select -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js" ></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
 
+<!-- Initialize Export-CSV -->
 <script src="lib/packages/export-csv/export-csv.js" ></script>
 
 <script>
@@ -45,11 +49,12 @@
 
 <script type="text/javascript">
 	$(window).on('load', function () {
-		
+
 		$('.selectpicker').selectpicker();
-	    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-    		$('.selectpicker').selectpicker('mobile');
-    	};
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+			$('.selectpicker').selectpicker('mobile');
+		};
+
 	});
 </script>
 
@@ -159,7 +164,7 @@ if (isset($sensorID)) {
 }
 
 echo "<div style='margin-bottom:25px'><div style='text-align:center;'>";
-echo "<h5>$clientname</h5>";
+	echo "<h5>$clientname</h5>";
 echo "</div>";
 ?>
 	<fieldset>
@@ -201,7 +206,7 @@ echo "<div class='collapse' id='filter'>";
 								$sensors[$i][1] = $sensor_name;
 								$i++;
 							};
-							echo "<select class='selectpicker' multiple='multiple' class='form-control' name='sensorID[]' id='sensorID' title='".$lang['Chose graph']."'>";
+							echo "<select class='selectpicker' multiple data-selected-text-format='count>3' name='sensorID[]' id='sensorID' title='".$lang['Chose graph']."'>";
 							$i = 0;
 
 								while ($i < count($sensors)) {
@@ -323,7 +328,47 @@ echo <<<end
 		}
 	});
 		$('#container').highcharts({
+			navigator: {
+				series: {
+					includeInCSVExport: false
+				}
+			},
+			rangeSelector: {
+				inputEnabled: $('#container').width() > 780,
+				enabled: true,
+				buttons: [{
+					type: 'hour',
+					count: 1,
+					text: '1{$lang['h']}'
+				}, {
+					type: 'day',
+					count: 1,
+					text: '1{$lang['d']}'
+				}, {
+					type: 'week',
+					count: 1,
+					text: '1{$lang['w']}'
+				}, {
+					type: 'month',
+					count: 1,
+					text: '1{$lang['m']}'
+				}, {
+					type: 'month',
+					count: 6,
+					text: '6{$lang['m']}'
+				}, {
+					type: 'year',
+					count: 1,
+					text: '1{$lang['yr']}'
+				}, {
+					type: 'all',
+					text: '{$lang['All']}'
+				}],
+				selected: 2
+			},
+
 			chart: {
+				renderTo: 'container',
 				type: 'spline',
 				zoomType: 'x', //makes it possible to zoom in the chart
 				pinchType: 'x', //possible to pinch-zoom on touchscreens
@@ -381,7 +426,7 @@ echo <<<end
 
 			plotOptions: {
 				spline: {
-					gapSize: 2
+					gapSize: 0
 				}
 			},
 
@@ -399,10 +444,9 @@ echo <<<end
 	});
 	</script>
 
-	<div id="container" style="height: 600px">
+	<div id="container">
 </div> 
 end;
-	echo "<button id='getcsv'>{$lang['Export as']} CSV</button>";
 
 /* If one sensor chosen makes a table with max, min, and average values
 --------------------------------------------------------------------------- */

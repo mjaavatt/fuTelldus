@@ -35,6 +35,8 @@ $lang = array(
 	"Userprofile" => "Användarprofil",
 	"My profile" => "Min profil",
 	"Not logged in" => "Inte inloggad",
+	"Remember me" => "Kom ihåg mig",
+	
 	
 
 	// Messages
@@ -209,6 +211,14 @@ $lang = array(
 	"weeks" => "veckor",
 	"months" => "månader",
 	"years" => "år",
+	
+	// Rangeselector
+	"h" => "h",
+	"d" => "d",
+	"m" => "m",
+	"w" => "v",
+	"yr" => "år",
+	"All" => "Allt",
 
 );
 

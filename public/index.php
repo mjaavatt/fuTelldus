@@ -30,18 +30,18 @@ ini_set('include_path', '/volume1/web/fuTelldus/public');
     <meta name="description" content="">
     <meta name="author" content="">
 
+	<!-- Bootstrap framework -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>	
+
 	<!-- Jquery -->
-	<script src="../lib/packages/jquery/jquery-2.1.1.min.js"></script>
-	<script src="../lib/packages/jquery-ui-1.11.0.custom/jquery-ui.min.js"></script>
-	<link href="../lib/packages/jquery-ui-1.11.0.custom/jquery-ui.min.css" rel="stylesheet">
+	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+	<link href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
 	<script src="../lib/packages/timeago_jquery/jquery.timeago.js"></script>
 	<?php
 		if ($defaultLang == "sw") echo "<script src=\"../lib/packages/timeago_jquery/jquery.timeago.sw.js\"></script>";
 	?>
-
-	<!-- Bootstrap framework -->
-	<link href="../lib/packages/bootstrap/css/bootstrap.css" rel="stylesheet">
-<!--	<link href="../lib/packages/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"> -->
 
 	<!-- For iPhone 4 Retina display: -->
 	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="../images/thermometer.png">
@@ -78,29 +78,29 @@ ini_set('include_path', '/volume1/web/fuTelldus/public');
 
 </head>
 <body>
-
 <div class="container">
-<nav class="navbar navbar-default" style="margin-top:30px" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-	  <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-		<a class="navbar-brand" style='color:#0088cc; font-weight:bold' href="../public/index.php">fuTelldus</a>
-    </div>
+	
+	<nav class="navbar navbar-default" style="margin-top:30px" role="navigation">
+		<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" style='color:#0088cc; font-weight:bold' href="../public/index.php">fuTelldus</a>
+			</div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-	<div class="collapse navbar-collapse" id="navbar">
-		  <ul class="nav navbar-nav navbar-right">
-            <li><a href="../login/"><?php echo "<span class='glyphicon glyphicon-off'></span> "; echo $lang['Log in']; ?></a></li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="navbar">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="../login/"><?php echo "<span class='glyphicon glyphicon-off'></span> "; echo $lang['Log in']; ?></a></li>
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</div><!-- /.container-fluid -->
+	</nav>
 
 		<?php include("include_script.inc.php"); ?>
 
@@ -118,7 +118,7 @@ ini_set('include_path', '/volume1/web/fuTelldus/public');
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-	<script src="../lib/packages/bootstrap/js/bootstrap.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 	
 </body>
 </html>
