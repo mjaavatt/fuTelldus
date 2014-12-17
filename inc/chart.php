@@ -50,7 +50,7 @@
 <script type="text/javascript">
 	$(window).on('load', function () {
 
-		$('.selectpicker').selectpicker();
+//		$('.selectpicker').selectpicker();
 		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
 			$('.selectpicker').selectpicker('mobile');
 		};

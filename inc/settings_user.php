@@ -81,18 +81,33 @@
 			echo "<div class='form-group'>";
 				echo "<label for='control-label' for='selectChart'>".$lang['Select chart']."</label>";
 				echo "<div class='controls'>";
-					echo "<select class='form-control' style='max-width:200px;' name='selectChart'>";
-			$i=0;
-				while ($i<$count) {
-					if ($selectedUser['chart_type'] == $db_sensors_id[$i]) $selectedChart = "selected='selected'";
+				echo "<select class='form-control' style='max-width:200px;' name='selectChart'>"; //[]' id='selectChart' multiple
+					$query = "SELECT * FROM " . $db_prefix . "sensors WHERE user_id='" . $user['user_id'] . "' AND monitoring='1' ORDER BY name ASC LIMIT 100";
+					$result = $mysqli->query($query);
+					$i = 0;
+					while ($row = $result->fetch_array()) {
+						$sensor_id = $row['sensor_id'];
+						$sensor_name = $row['name'];
+						$sensors[$i][0] = $sensor_id; // agregate all sensor id´s and names in one array
+						$sensors[$i][1] = $sensor_name;
+						$i++;
+					};
+					$i = 0;
+					while ($i < count($sensors)) {
+						if ($selectedUser['chart_type'] == $sensors[$i][0]) {
+							$selected = 'selected';
+						}
+						else {
+							$selected = '';
+						};
+						echo "<option $selected value={$sensors[$i][0]}>{$sensors[$i][1]}</option>";
+						$i++;
+					};
+					echo "<option disabled>──────────</option>";
+					if ($selectedUser['chart_type'] == 'mergeCharts') $selectedChart = "selected='selected'";
 					else $selectedChart = "";
-					echo "<option value='".$db_sensors_id[$i]."' $selectedChart>{$db_sensors[$i]}</option>";
-					$i++; 
-				};
-				if ($selectedUser['chart_type'] == 'mergeCharts') $selectedChart = "selected='selected'";
-				else $selectedChart = "";
-				echo "<option value='mergeCharts' $selectedChart>{$lang['Combine charts']}</option>";
-echo "</select>";
+					echo "<option value='mergeCharts' $selectedChart>{$lang['Combine charts']}</option>";
+				echo "</select>";
 			echo "</div>";
 		echo "</fieldset>";	
 	?>

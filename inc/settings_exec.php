@@ -67,6 +67,8 @@
 		$newCPassword = clean($_POST['newCPassword']);
 
 		$selectChart = clean($_POST['selectChart']);
+//		$selectChart[] = clean($_POST['selectChart']);
+//		$Chart = serialize ($selectChart);
 
 		$syncTelldusLists = clean($_POST['syncTelldusLists']);
 		$public_key = clean($_POST['public_key']);
