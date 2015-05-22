@@ -31,13 +31,13 @@ ini_set('include_path', '/volume1/web/fuTelldus/public');
     <meta name="author" content="">
 
 	<!-- Bootstrap framework -->
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>	
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>	
 
 	<!-- Jquery -->
-	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-	<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
-	<link href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
+	<link href="http://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
 	<script src="../lib/packages/timeago_jquery/jquery.timeago.js"></script>
 	<?php
 		if ($defaultLang == "sw") echo "<script src=\"../lib/packages/timeago_jquery/jquery.timeago.sw.js\"></script>";
