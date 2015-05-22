@@ -7,8 +7,8 @@
 <script src="lib/packages/jquery/jquery.ui.datepicker-sv.js"></script> <!-- Swedish languagefile for jquery-datepicker -->
 
 <!-- Initialize Bootstrap-select -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js" ></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.1/js/bootstrap-select.min.js" ></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.1/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
 
 <!-- Initialize Export-CSV -->
 <script src="lib/packages/export-csv/export-csv.js" ></script>
