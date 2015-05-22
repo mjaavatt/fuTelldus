@@ -2,6 +2,7 @@
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script src="../lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.min.js" ></script>
 <link href="../lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.css" rel="stylesheet">
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 <script src="../lib/packages/jquery/jquery.ui.datepicker-sv.js"></script> <!-- Swedish languagefile for jquery-datepicker -->
 
 <!-- Initialize Bootstrap-select -->
