@@ -20,8 +20,8 @@
 	
 	<!-- Jquery -->
 	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-	<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
-	<link href="http://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
+	<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+	<link href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet">
 	<script src="lib/packages/timeago_jquery/jquery.timeago.js"></script>
 	<?php
 		if ($defaultLang == "sw") echo "<script src=\"lib/packages/timeago_jquery/jquery.timeago.sw.js\"></script>";
