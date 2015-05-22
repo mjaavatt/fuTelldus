@@ -92,11 +92,9 @@
 		?>
 		<li class="<?php echo $navMainpage_active; ?>"><a href="index.php"><?php echo "<span class='glyphicon glyphicon-home'></span> "; echo $lang['Home']; ?></a></li>
 		<li class="<?php echo $navSensors_active; ?>"><a href="?page=sensors"><?php echo "<span class='glyphicon glyphicon-dashboard'></span> "; echo $lang['Sensors']; ?></a></li>
-<!--		<li class="<php echo $navDevices_active; ?>"><a href="?page=devices"><php echo "<span class='glyphicon glyphicon-adjust'></span> "; echo $lang['Lights']; ?></a></li> -->
 		<li class="<?php echo $navDevices_active; ?>"><a href="?page=devices"><?php echo "<i class='fa fa-lightbulb-o fa-lg'></i> "; echo $lang['Lights']; ?></a></li>
 		<li class="<?php echo $navChart_active; ?>"><a href="?page=chart"><?php echo "<span class='glyphicon glyphicon-stats'></span> "; echo $lang['Chart']; ?></a>
-<!--		 <li class="< ?php echo $navReport_active; ?>"><a href="?page=report">< ?php echo "<span class='glyphicon glyphicon-list-alt'></span> "; echo $lang['Report']; ?></a></li> -->
-		<li class="<?php echo $navSettings_active; ?>"><a href="?page=settings"><?php echo "<i class='fa fa-cogs'></i> "; echo $lang['Settings']; ?></a></li>
+		<li class="<?php echo $navSettings_active; ?>"><a href="?page=settings"><?php echo "<span class='glyphicon glyphicon-cog'></span> "; echo $lang['Settings']; ?></a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
        		<li class="dropdown pull-right">
