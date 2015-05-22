@@ -20,6 +20,7 @@
 	- Uses Bootstrapselect 1.7.1
 	- Uses JQuery 2.1.4
 	- Uses JQueryUI 1.11.3
+	- Uses Font Awesome 4.3.0
 	
 	
 	26.11.2014
