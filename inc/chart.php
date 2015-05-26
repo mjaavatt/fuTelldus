@@ -1,6 +1,5 @@
 <!-- <script src="lib/packages/Highcharts-4.0.4/js/highcharts.js"></script>
 <script src="lib/packages/Highcharts-4.0.4/js/modules/exporting.js"></script> -->
-<<<<<<< HEAD
 <script src="http://code.highcharts.com/stock/highstock.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script src="lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.min.js" ></script>
@@ -328,11 +327,7 @@ echo <<<end
 			useUTC: false
 		}
 	});
-<<<<<<< HEAD
 		$('#container').highcharts('StockChart',{
-=======
-		$('#container').highcharts({
->>>>>>> 558447d0fef02c9c1fc5d4ed4bc4b706bb0ae6f1
 			navigator: {
 				series: {
 					includeInCSVExport: false
