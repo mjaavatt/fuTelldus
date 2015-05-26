@@ -34,9 +34,6 @@
 		$xmlString = $response->getBody();
 		$xmldata = new SimpleXMLElement($xmlString);
 
-
-
-
 		/* Store devices in DB
 		--------------------------------------------------------------------------- */
 		foreach($xmldata->device as $deviceData) {
@@ -51,7 +48,6 @@
 			$clientName = trim($deviceData['clientName']);
 			$online = trim($deviceData['online']);
 			$editable = trim($deviceData['editable']);
-
 
 			// Use REPLACE INTO to overwrite with device_id as primary
 			$query = "REPLACE INTO ".$db_prefix."devices SET 
@@ -69,25 +65,21 @@
 			$result = $mysqli->query($query);
 		}
 
-		echo "<div class='hidden-phone' style='float:right; margin-right:25px; margin-bottom:-50px; color:green; font-size:10px;'>{$lang['List synced']}</div>";
+		echo "<div class='hidden-xs' style='float:right; margin-right:25px; margin-bottom:-50px; color:green; font-size:10px;'>{$lang['List synced']}</div>";
 	}
-
-
 
 	echo "<div style='float:right; height:20px; margin-right:20px;' id='ajaxFeedback'></div>";
 
-
-
 	/* List groups
 	--------------------------------------------------------------------------- */
-	echo "<h3 class='hidden-phone'>{$lang['Groups']}</h3>";
+	echo "<h3 class='hidden-xs'>{$lang['Groups']}</h3>";
 
-	//echo "<div class='well'>";
+	echo "<div class='well'>";
 		echo "<table class='table table-striped table-hover'>";
-			echo "<thead class='hidden-phone'>";
+			echo "<thead class='hidden-xs'>";
 				echo "<tr>";
 					echo "<th>{$lang['Name']}</th>";
-					echo "<th class='hidden-phone' width='40%'>{$lang['Location']}</th>";
+					echo "<th class='hidden-xs' width='40%'>{$lang['Location']}</th>";
 					echo "<th width='20%'></th>";
 				echo "</tr>";
 			echo "</thead>";
@@ -99,7 +91,7 @@
 				while ($row = $result->fetch_array()) {
 					echo "<tr>";
 						echo "<td>{$row['name']}</td>";
-						echo "<td class='hidden-phone'>{$row['clientname']}</td>";
+						echo "<td class='hidden-xs'>{$row['clientname']}</td>";
 						echo "<td style='text-align:right;'>";
 							echo "<div id='ajax_loader_{$row['device_id']}'></div>";
 							echo "<div class='btn-group'>";
@@ -111,20 +103,20 @@
 				}
 			echo "</tbody>";
 		echo "</table>";
-	//echo "</div>";
+	echo "</div>";
 
 
 
 	/* List devices
 	--------------------------------------------------------------------------- */
-	echo "<h3 class='hidden-phone'>{$lang['Devices']}</h3>";
+	echo "<h3 class='hidden-xs'>{$lang['Devices']}</h3>";
 
-	//echo "<div class='well'>";
+	echo "<div class='well'>";
 		echo "<table class='table table-striped table-hover'>";
-			echo "<thead class='hidden-phone'>";
+			echo "<thead class='hidden-xs'>";
 				echo "<tr>";
 					echo "<th>{$lang['Name']}</th>";
-					echo "<th class='hidden-phone' width='40%'>{$lang['Location']}</th>";
+					echo "<th class='hidden-xs' width='40%'>{$lang['Location']}</th>";
 					echo "<th width='20%'></th>";
 				echo "</tr>";
 			echo "</thead>";
@@ -140,7 +132,7 @@
 							echo "{$row['name']}";
 						echo "</td>";
 
-						echo "<td class='hidden-phone'>{$row['clientname']}</td>";
+						echo "<td class='hidden-xs'>{$row['clientname']}</td>";
 						echo "<td style='text-align:right;'>";
 
 
@@ -170,7 +162,7 @@
 				}
 			echo "</tbody>";
 		echo "</table>";
-	//echo "</div>";
+	echo "</div>";
 
 
 ?>

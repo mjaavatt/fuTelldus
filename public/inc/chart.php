@@ -1,286 +1,489 @@
-    <script src="../lib/packages/rgraph_libraries/RGraph.common.core.js" ></script>
-	<script src="../lib/packages/rgraph_libraries/RGraph.common.dynamic.js" ></script>
-	<script src="../lib/packages/rgraph_libraries/RGraph.common.tooltips.js" ></script>
-	<script src="../lib/packages/rgraph_libraries/RGraph.common.effects.js" ></script>
-	<script src="../lib/packages/rgraph_libraries/RGraph.common.key.js" ></script>
-	<script src="../lib/packages/rgraph_libraries/RGraph.line.js" ></script>
-	<!--[if lt IE 9]><script src="../excanvas/excanvas.js"></script><![endif]-->
-
-	<div class="container">
-
-		<?php
-			
-
-			/* Get/set parameters
-			--------------------------------------------------------------------------- */
-			if (isset($_GET['id'])) {
-				$getID = clean($_GET['id']);
-			} else {
-				echo "<p>Sensor ID is missing...</p>";
-				exit();
-			}
-
-			$showFromDate = time() - 86400;
-
-
-
-
-
-
-			/* Get sensor data
-		    --------------------------------------------------------------------------- */
-		    $query = "SELECT * FROM ".$db_prefix."sensors WHERE sensor_id='$getID'";
-		    $result = $mysqli->query($query);
-			$row = $result->fetch_array();
-
-
-	        $sensorID = trim($row['sensor_id']);
-	        echo "<h4>{$row['name']}</h4>";
-	        echo "<h5 style='margin-left:10px;'>{$row['clientname']}</h5>";
-
-
-
-
-
-
-
-
-			echo "<div class='' style='margin-bottom:60px;'>";
-
-
-		        /* Get sensordata and generate graph
-		        --------------------------------------------------------------------------- */
-		        //echo "<h5 class='hidden-phone' style='margin-bottom:35px;'>".$lang['Latest readings']."</h5>";
-
-		        $queryS = "SELECT * FROM ".$db_prefix."sensors_log WHERE sensor_id='$getID' AND time_updated > '$showFromDate' ORDER BY time_updated DESC LIMIT 1000";
-		        $resultS = $mysqli->query($queryS);
-
-
-		        // Set arrays
-		        $labels             = array();
-		        $tooltips_temp      = array();
-		        $tooltips_humidity  = array();
-		        $temp_value         = array();
-		        $humidity_value     = array();
-
-
-		        // Collect data
-		        $count = 0; // Settings count for view data every hour
-		        $negativeValue = false;
-		        $maxValue = 0;
-		        $minValue = 0;
-		        
-		        while ($sensorData = $resultS->fetch_array()) {
-
-		            $db_tempValue = trim($sensorData["temp_value"]);
-		            $db_humidityValue = trim($sensorData["humidity_value"]);
-
-		            $showHumidity = false;
-		            if ($sensorData["humidity_value"] > 0) $showHumidity = true;
-
-
-
-
-		            if ($count == 1) {
-		                $labels[]               = date("H:i", $sensorData["time_updated"]);
-		                $tooltips_temp[]        = "<b>".$db_tempValue."&deg;</b> &nbsp; (" . date("H:i", $sensorData["time_updated"]) . ")";
-		                $tooltips_humidity[]    = "$db_humidityValue %";
-		                $temp_value[]           = $db_tempValue;
-		                $humidity_value[]       = $db_humidityValue;
-
-		                // Check if chart has negative values
-		                if ($db_tempValue < 0) $negativeValue = true;
-
-		                // Get max/min values in chart
-		                if ($db_tempValue > $maxValue) $maxValue = $db_tempValue;
-		                if ($db_tempValue < $minValue) $minValue = $db_tempValue;
-
-		            }
-
-
-		            // Add to count or reset
-		            $count++;
-		            if ($count == 4) $count = 0;
-		        }
-
-
-		        // Round the max/min values for use as yaxis max/min on chart
-		        $minValue = round($minValue) - 2;
-		        $maxValue = round($maxValue) + 2;
-
-
-
-		        // Reverse array to preview newest update at right in chart
-		        $labels             = array_reverse($labels);
-		        $tooltips_temp      = array_reverse($tooltips_temp);
-		        $tooltips_humidity  = array_reverse($tooltips_humidity);
-		        $temp_value         = array_reverse($temp_value);
-		        $humidity_value     = array_reverse($humidity_value);
-
-
-		        // Aggregate all the data into one string
-		        $temp_value_string          = "[" . join(", ", $temp_value) . "]";
-		        $humidity_value_string      = "[" . join(", ", $humidity_value) . "]";
-		        $labels_string              = "['" . join("', '", $labels) . "']";
-		        $tooltips_temp_string       = "['" . join("', '", $tooltips_temp) . "']";
-		        $tooltips_humidity_string   = "['" . join("', '", $tooltips_humidity) . "']";
-
-
-		        if ($showHumidity) {
-		            echo "
-		            <canvas class='linechart hidden-phone' id='$getID' width='990' height='400'>[No canvas support]</canvas>
-		            <script>
-		                chart = new RGraph.Line('$getID', $temp_value_string, $humidity_value_string);
-		                chart.Set('chart.background.grid.autofit', true);
-		                chart.Set('chart.gutter.left', 35);
-		                chart.Set('chart.gutter.right', 5);
-		                chart.Set('chart.hmargin', 10);
-		                chart.Set('chart.tickmarks', 'circle');
-		                chart.Set('chart.labels', $labels_string);
-		                chart.Set('chart.tooltips', $tooltips_temp_string, $tooltips_humidity_string);
-		                chart.Set('chart.key', ['".$lang['Temperature']."', '".$lang['Humidity']."']);
-		            ";
-
-		            if ($negativeValue == true) echo "chart.Set('chart.xaxispos', 'center');";
-
-		            echo "
-		                chart.Set('key.position', 'gutter');
-		                chart.Set('key.position.gutter.boxed', false);
-		                chart.Set('key.position.x', 700);
-		                chart.Set('key.position.y', 0);
-		                chart.Set('chart.text.angle', 45);
-		                chart.Set('chart.gutter.bottom', 50);
-		                chart.Draw();
-		            </script>
-		            ";
-		        } else {
-		            echo "
-		            <canvas class='linechart hidden-phone' id='$getID' width='990' height='400'>[No canvas support]</canvas>
-		            <script>
-		                chart = new RGraph.Line('$getID', $temp_value_string);
-		                chart.Set('chart.background.grid.autofit', true);
-		                chart.Set('chart.gutter.left', 35);
-		                chart.Set('chart.gutter.right', 5);
-		                chart.Set('chart.hmargin', 10);
-		                chart.Set('chart.tickmarks', 'circle');
-		                chart.Set('chart.labels', $labels_string);
-		                chart.Set('chart.tooltips', $tooltips_temp_string);
-		                chart.Set('chart.key', ['".$lang['Temperature']."']);
-		            ";
-
-		            if ($negativeValue == true) echo "chart.Set('chart.xaxispos', 'center');";
-
-		            //echo "chart.Set('chart.ymax', $maxValue);";
-		            //echo "chart.Set('chart.ymin', $minValue);";
-
-		            echo "
-		                chart.Set('key.position', 'gutter');
-		                chart.Set('key.position.gutter.boxed', false);
-		                chart.Set('key.position.x', 780);
-		                chart.Set('key.position.y', 0);
-		                chart.Set('chart.text.angle', 45);
-		                chart.Set('chart.gutter.bottom', 50);
-		                chart.Draw();
-		            </script>
-		            ";
-		        }
-
-		        unset($labels);
-		        unset($tooltips_temp);
-		        unset($tooltips_humidity);
-		        unset($temp_value);
-		        unset($humidity_value);
-
-
-
-
-
-		        /* Max, min avrage
-		        --------------------------------------------------------------------------- */
-		        echo "<h5>".$lang['Total']."</h5>";
-
-		        $queryNow = "SELECT * FROM ".$db_prefix."sensors_log WHERE sensor_id='$getID' AND time_updated > '$showFromDate' ORDER BY time_updated DESC LIMIT 1";
-		        $resultNow = $mysqli->query($queryNow);
-		        $sensorDataNow = $resultNow->fetch_array();
-
-		        $queryS = "SELECT AVG(temp_value), MAX(temp_value), MIN(temp_value), AVG(humidity_value), MAX(humidity_value), MIN(humidity_value) FROM ".$db_prefix."sensors_log WHERE sensor_id='$getID' AND time_updated > '$showFromDate'";
-		        $resultS = $mysqli->query($queryS);
-		        $sensorData = $resultS->fetch_array();
-
-
-		        echo "<table class='table table-striped table-hover'>";
-		            echo "<tbody>";
-
-
-		                // Temperature
-		            	 echo "<tr>";
-		                    echo "<td>".$lang['Temperature']." ".strtolower($lang['Now'])."</td>";
-		                    echo "<td>";
-		                    	echo round($sensorDataNow['temp_value'], 2)." &deg;";
-		                    	echo "<abbr style='margin-left:20px;' class=\"timeago\" title='".date("c", $sensorDataNow['time_updated'])."'>".date("d-m-Y H:i", $sensorDataNow['time_updated'])."</abbr>";
-		                    echo "</td>";
-		                echo "</tr>";
-
-
-		                echo "<tr>";
-		                    echo "<td>".$lang['Avrage']." ".strtolower($lang['Temperature'])."</td>";
-		                    echo "<td>".round($sensorData['AVG(temp_value)'], 2)." &deg;</td>";
-		                echo "</tr>";
-
-		                echo "<tr>";
-		                    echo "<td>".$lang['Max']." ".strtolower($lang['Temperature'])."</td>";
-		                    echo "<td>".round($sensorData['MAX(temp_value)'], 2)." &deg; </td>";
-		                echo "</tr>";
-
-		                echo "<tr>";
-		                    echo "<td>".$lang['Min']." ".strtolower($lang['Temperature'])."</td>";
-		                    echo "<td>".round($sensorData['MIN(temp_value)'], 2)." &deg; </td>";
-		                echo "</tr>";
-
-
-
-
-		                // Humidity
-		                if ($sensorDataNow['humidity_value'] > 0) {
-		                    echo "<tr>";
-		                        echo "<td>".$lang['Humidity']." ".strtolower($lang['Now'])."</td>";
-		                        echo "<td>";
-		                        	echo round($sensorDataNow['humidity_value'], 2)." %";
-		                        	echo "<abbr style='margin-left:20px;' class=\"timeago\" title='".date("c", $sensorDataNow['time_updated'])."'>".date("d-m-Y H:i", $sensorDataNow['time_updated'])."</abbr>";
-		                        echo "</td>";
-		                    echo "</tr>";
-		                }
-
-
-		                if ($sensorData['AVG(humidity_value)'] > 0) {
-		                    echo "<tr>";
-		                        echo "<td>".$lang['Avrage']." ".strtolower($lang['Humidity'])."</td>";
-		                        echo "<td>".round($sensorData['AVG(humidity_value)'], 2)." %</td>";
-		                    echo "</tr>";
-		                }
-
-		                if ($sensorData['MAX(humidity_value)'] > 0) {
-		                    echo "<tr>";
-		                        echo "<td>".$lang['Max']." ".strtolower($lang['Humidity'])."</td>";
-		                        echo "<td>".round($sensorData['MAX(humidity_value)'], 2)." %</td>";
-		                    echo "</tr>";
-		                }
-
-		                if ($sensorData['MIN(humidity_value)'] > 0) {
-		                    echo "<tr>";
-		                        echo "<td>".$lang['Min']." ".strtolower($lang['Humidity'])."</td>";
-		                        echo "<td>".round($sensorData['MIN(humidity_value)'], 2)." %</td>";
-		                    echo "</tr>";
-		                }
-
-
-
-		            echo "</tbody>";
-		        echo "</table>";
-
-
-		    echo "</div>";
-
-		?>
-
-	</div>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="../lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.min.js" ></script>
+<link href="../lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.css" rel="stylesheet">
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<script src="../lib/packages/jquery/jquery.ui.datepicker-sv.js"></script> <!-- Swedish languagefile for jquery-datepicker -->
+
+<!-- Initialize Bootstrap-select -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.1/js/bootstrap-select.min.js" ></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.1/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+
+<!-- Initialize Export-CSV -->
+<script src="../lib/packages/export-csv/export-csv.js" ></script>
+
+<script>
+	$(document).ready(function() {
+		$.datepicker.setDefaults($.datepicker.regional['sv']);
+		$('#dateFrom').datepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			changeYear: true,
+			numberOfMonths: 2,	// shows 2 months
+			constrainInput: true,   // prevent letters in the input field
+			dateFormat: 'yy-mm-dd',  // Date Format used
+			firstDay: 1,  // Start with Monday
+			showOtherMonths: true,
+			selectOtherMonths: true
+		});
+		
+		$('#dateTo').datepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			changeYear: true,
+			numberOfMonths: 2,	// shows 2 months
+			constrainInput: true,   // prevent letters in the input field
+			dateFormat: 'yy-mm-dd',  // Date Format used
+			firstDay: 1,  // Start with Monday
+			showOtherMonths: true,
+			selectOtherMonths: true
+		});
+
+		$('#timeFrom').timepicker({ 'timeFormat': 'H:i' });
+		$('#timeTo').timepicker({ 'timeFormat': 'H:i' });
+
+		$('#tooltip').tooltip();
+	});
+</script>
+
+<script type="text/javascript">
+	$(window).on('load', function () {
+	
+		$('.selectpicker').selectpicker();
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+			$('.selectpicker').selectpicker('mobile');
+		};
+
+	});
+</script>
+
+<?php
+/* Get chosen sensor ID
+--------------------------------------------------------------------------- */
+if (isset($_GET['id'])) {
+	$sensorID[0][0] = clean($_GET['id']);
+};
+
+/* Get values
+--------------------------------------------------------------------------- */
+if (isset($_POST['submit'])) {
+	$sensorID[] = $_POST['sensorID'];
+	clean($_POST['sensorID']);
+	$dateFrom = clean($_POST['dateFrom']);
+	$timeFrom = clean($_POST['timeFrom']);
+	$dateTo = clean($_POST['dateTo']);
+	$timeTo = clean($_POST['timeTo']);
+	$jump = clean($_POST['jump']);
+	$i = 0;
+	foreach($sensorID as $v1) {
+		foreach($v1 as $v2) {
+			$sensorID_inv[$i++][0] = $v2;
+		}
+	}
+
+	unset($v1);
+	unset($v2);
+	$sensorID = $sensorID_inv;
+};
+
+/* Get a list of all the sensors monitored
+--------------------------------------------------------------------------- */
+if (!isset($sensorID)) {
+	$query = "SELECT * FROM ".$db_prefix."sensors WHERE monitoring='1' AND public='1'";
+	$result = $mysqli->query($query);
+	$row = $result->fetch_array();
+	if (substr($row['chart_type'], 0, 11) == 'mergeCharts') {
+		$query = "SELECT * FROM ".$db_prefix."sensors WHERE monitoring='1' AND public='1' ORDER BY name ASC LIMIT 100";
+		$result = $mysqli->query($query);
+		$i = 0;
+		while ($row = $result->fetch_array()) {
+			$sensor_id = $row['sensor_id'];
+			$sensor_name = $row['name'];
+			$sensorID[$i][0] = $sensor_id; // agregate all sensor id´s and names in one array
+			$sensorID[$i][1] = $sensor_name;
+			$i++;
+		};
+	} else {
+		$sensorID[0][0] = $row['chart_type'];
+	};
+};
+
+if (isset($_GET['action'])) $action = clean($_GET['action']);
+
+if ($action == 'edit' || count($sensorID)>1) {
+	$i = 0;
+	while ($i < count($sensorID)) {
+		/* Set parameters
+		--------------------------------------------------------------------------- */
+		$query = "SELECT * FROM " . $db_prefix . "sensors WHERE sensor_id='{$sensorID[$i][0]}' LIMIT 1";
+		$result = $mysqli->query($query);
+		$row = $result->fetch_array();
+		$clientname = $row['clientname'];
+		$sensorID[$i][0] = $sensorID[$i][0]; // Sensor ID
+		$sensorID[$i][1] = $row['name']; // Sensor name
+		$i++;
+	};
+}
+else {
+	/* Set parameters
+	--------------------------------------------------------------------------- */
+	$query = "SELECT * FROM " . $db_prefix . "sensors WHERE sensor_id='{$sensorID[0][0]}' LIMIT 1";
+	$result = $mysqli->query($query);
+	$row = $result->fetch_array();
+	$sensorID[0][1] = $row['name'];
+	$clientname = $row['clientname'];
+};
+
+/* Sets start date if not chosen
+--------------------------------------------------------------------------- */
+if (!isset($dateFrom)) {
+	$dateFrom = date("Y-m-d", strtotime(' -1 day'));
+	$timeFrom = "00:00";
+	$dateTo = date("Y-m-d");
+	$timeTo = "23:59";
+	$jump = 4;
+}
+
+/* Create unix timestamps
+--------------------------------------------------------------------------- */
+list($yearFrom, $monthFrom, $dayFrom) = explode("-", $dateFrom);
+list($hourFrom, $minFrom) = explode(":", $timeFrom);
+list($yearTo, $monthTo, $dayTo) = explode("-", $dateTo);
+list($hourTo, $minTo) = explode(":", $timeTo);
+$dateFrom = mktime($hourFrom, $minFrom, 00, $monthFrom, $dayFrom, $yearFrom);
+$dateTo = mktime($hourTo, $minTo, 00, $monthTo, $dayTo, $yearTo);
+
+/* Check for errors
+--------------------------------------------------------------------------- */
+if (isset($sensorID)) {
+	$error = false;
+	if ($dateFrom > $dateTo) $error = true;
+	if (date("d", $dateFrom) < 1 || date("d", $dateFrom) > 31) $error = true;
+	if (date("d", $dateTo) < 1 || date("d", $dateTo) > 31) $error = true;
+}
+echo "<div class='btn-group'>";
+	echo "<a href='index.php' class='btn btn-default active' role='button'><span class='glyphicon glyphicon-arrow-left'></span> {$lang['Return']}</a>";
+echo "</div>";
+
+echo "<div style='margin-bottom:25px'><div style='text-align:center;'>";
+	echo "<h5>$clientname</h5>";
+echo "</div>";
+?>
+	<fieldset>
+		<div class="pull-left">
+			<button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#filter"><?php
+			echo "<span class='glyphicon glyphicon-ok'></span> ";
+			echo $lang['Set filter']; ?></button>
+		</div>
+	</fieldset>
+<?php
+
+/* Filter form
+--------------------------------------------------------------------------- */
+echo "<div class='collapse' id='filter'>";
+	echo "<div class='alert alert-info' role='alert'>";
+		echo "<form class='form-inline' role='form' action='?page=chart&action=edit' method='POST'>";
+			echo "<div class='table-responsive'>";
+				echo "<table class='table'>";
+				echo "<thead>";
+					echo "<tr>";
+						echo "<th>" . $lang['Sensor'] . "</th>";
+						echo "<th>" . $lang['Date from'] . "</th>";
+						echo "<th>" . $lang['Date to'] . "</th>";
+						echo "<th>" . $lang['Jump'] . "</th>";
+						echo "<th></th>";
+					echo "</tr>";
+				echo "</thead>";
+				echo "<tbody>";
+					echo "<tr>";
+						echo "<td>";
+							$query = "SELECT * FROM " . $db_prefix . "sensors WHERE public='1' AND monitoring='1' ORDER BY name ASC LIMIT 100";
+							$result = $mysqli->query($query);
+							$i = 0;
+
+							while ($row = $result->fetch_array()) {
+								$sensor_id = $row['sensor_id'];
+								$sensor_name = $row['name'];
+								$sensors[$i][0] = $sensor_id; // agregate all sensor id´s and names in one array
+								$sensors[$i][1] = $sensor_name;
+								$i++;
+							};
+							echo "<select class='selectpicker' multiple data-selected-text-format='count>3' name='sensorID[]' id='sensorID' title='".$lang['Chose graph']."'>";
+							$i = 0;
+
+								while ($i < count($sensors)) {
+									$k = 0;
+									while ($k < count($sensorID)) {
+										if ($sensors[$i][0] == $sensorID[$k][0]) {
+											$selected = 'selected';
+											break;
+										}
+										else {
+											$selected = '';
+										};
+										$k++;
+									};
+									echo "<option $selected value={$sensors[$i][0]}>{$sensors[$i][1]}</option>";
+									$i++;
+								};
+							echo "</select>";
+						echo "</td>";
+						echo "<td>";
+							echo "<input class='form-control' style='width:100px;' type='text' name='dateFrom' id='dateFrom' value='" . date("Y-m-d", $dateFrom) . "' />";
+							echo "<input class='form-control' style='width:65px; margin-left:5px;' type='text' name='timeFrom' id='timeFrom' value='" . date("H:i", $dateFrom) . "' />";
+						echo "</td>";
+						echo "<td>";
+							echo "<input class='form-control' style='width:100px;' type='text' name='dateTo' id='dateTo' value='" . date("Y-m-d", $dateTo) . "' />";
+							echo "<input class='form-control' style='width:65px; margin-left:5px;' type='text' name='timeTo' id='timeTo' value='" . date("H:i", $dateTo) . "' />";
+						echo "</td>";
+						echo "<td>";
+							echo "<input class='form-control' style='width:50px' type='text' name='jump' id='jump' value='$jump' /> ";
+							echo "<a href='#' id='tooltip' data-toggle='tooltip' data-placement='bottom' title='" . $lang['Jump description'] . "'>?</a>";
+						echo "</td>";
+						echo "<td>";
+							echo "<input class='btn btn-primary' type='submit' name='submit' value='" . $lang['Show data'] . "' />";
+						echo "</td>";
+					echo "</tr>";
+				echo "</tbody>";
+			echo "</table>";
+			echo "</div>";
+		echo "</form>";
+	echo "</div>";
+echo "</div>"; // end of form
+unset($value);
+
+/* Get sensordata
+--------------------------------------------------------------------------- */
+foreach($sensorID as list($id, $name)) {
+	echo "<div class='container'>";
+	unset($temp_values);
+	$joinValues = "";
+	unset($hum_values); // added humidity variables
+	$joinhumValues = "";
+	unset($showHumidity);
+	unset($sensorDataNow);
+
+	$queryS = "SELECT * FROM " . $db_prefix . "sensors_log WHERE sensor_id='$id' AND (time_updated > '$dateFrom' AND time_updated < '$dateTo') ORDER BY time_updated ASC ";
+	$resultS = $mysqli->query($queryS);
+	$count = 1; // Settings count for view data at different steps
+	$k=1;
+	while ($sensorData = $resultS->fetch_array()) {
+		$db_tempValue = trim($sensorData["temp_value"]);
+		$db_humValue = trim($sensorData["humidity_value"]); //retrive humidity values
+		$timeJS = $sensorData["time_updated"] * 1000;	// convert time to javascript time
+		if ($count == 1) {
+			$temp_values[] = "[" . $timeJS . "," . round($db_tempValue, 2) . "]";
+			$hum_values[] = "[" . $timeJS . "," . round($db_humValue, 2) . "]"; // do something with values
+			$sensorDataNow[] = $sensorData["humidity_value"];
+		};
+		if ($k==1) {
+			$time_start=$sensorData["time_updated"];	// Sets the first read timestamp
+			$k++;
+		};
+		if ($count == $jump) $count = 1;	// Add to count or reset
+		else $count++;
+		$time_stop=$sensorData["time_updated"];	// Updates the last read timestamp
+	};
+	if ($sensorDataNow["[humidity_value]" > 0]) $showHumidity = 1; // Looks fore humidity greater then 0
+	$joinValues = join($temp_values, ',');
+	$joinhumValues = join($hum_values, ','); // do something more with values
+
+	/* Desides if to plot the humidity or not
+	--------------------------------------------------------------------------- */
+	if ($showHumidity == 1) {
+		$seriesOptions[$countSensors] = "{name: '(" . $lang['Temperature'] . ") {$name}', type: 'spline', data: [$joinValues], tooltip: {valueDecimals: 1, valueSuffix: '°C'}}";
+		$countSensors++;
+		$seriesOptions[$countSensors] = "{name: '(" . $lang['Humidity'] . ") {$name}', type: 'spline', dashStyle: 'shortdot', data: [$joinhumValues], visible: false, yAxis: 1, tooltip: {valueDecimals: 1, valueSuffix: '%'}}";
+		$countSensors++;
+	}
+	else {
+		$seriesOptions[$countSensors] = "{name: '(" . $lang['Temperature'] . ") {$name}', type: 'spline', data: [$joinValues], tooltip: {valueDecimals: 1, valueSuffix: '°C'}}";
+		$countSensors++;
+	}
+
+	echo "</div>";
+};
+unset($id);
+unset($name);
+rsort($seriesOptions); // sorts the sensors in reversed order
+$joinSeriesData = join($seriesOptions, ',');
+$seriesData = "[$joinSeriesData]";
+
+/* Sets chartname depending if one sensor or many sensors chosen
+--------------------------------------------------------------------------- */
+if (count($sensorID) > 1) {
+	$title = $lang['Combine charts'];
+}
+else {
+	$title = $sensorID[0][1];
+}
+
+/* Plots the chart(s)
+--------------------------------------------------------------------------- */
+echo <<<end
+<div>
+	<script type="text/javascript">
+	$(function () {
+	Highcharts.setOptions({
+		global:{
+			useUTC: false
+		}
+	});
+		$('#container').highcharts({
+			navigator: {
+				series: {
+					includeInCSVExport: false
+				}
+			},
+
+			chart: {
+				renderTo: 'container',
+				type: 'spline',
+				zoomType: 'x', //makes it possible to zoom in the chart
+				pinchType: 'x', //possible to pinch-zoom on touchscreens
+				backgroundColor: '#FFFFFF', //sets background color
+				shadow: true //makes a shadow around the chart
+			},
+
+			legend: {
+				align: "center",
+				layout: "horizontal",
+				enabled: true,
+				verticalAlign: "bottom",
+			},
+
+			xAxis: {
+				type: 'datetime',
+			},
+
+			yAxis: [{
+				opposite: false,
+				title: {
+					text: '{$lang['Temperature']} (°C)',
+				},
+				labels: {
+					formatter: function () {
+						return this.value + '\u00B0C';
+					},
+					format: '{value}°C',
+						style: {
+						color: '#777'
+					},
+				},
+			}, 
+					{
+				opposite: true, //puts the yAxis for humidity on the right-hand side
+				showEmpty: false, //hides the axis if data not shown
+				title: { // added humidity yAxis
+					text: '{$lang['Humidity']} (%)',
+					   style: {
+						color: '#31EBB3'
+					}, // set manual color for yAxis humidity 
+				},
+				labels: {
+					formatter: function () {
+						return this.value + '%';
+					},
+					format: '{value}%',
+					  style: {
+						color: '#31EBB3'
+					},
+				},
+			}],
+
+			series: $seriesData,
+
+			plotOptions: {
+				spline: {
+					gapSize: 0
+				}
+			},
+
+			title: {
+				text: '{$title}'  
+			},
+
+		},
+		
+		function (chart) {
+				$('#getcsv').click(function () {
+					alert(chart.getCSV());
+				});
+		});
+	});
+	</script>
+
+	<div id="container">
+</div> 
+end;
+
+/* If one sensor chosen makes a table with max, min, and average values
+--------------------------------------------------------------------------- */
+if (count($sensorID) == 1) {
+	/* Last measurement
+	--------------------------------------------------------------------------- */
+	$queryS = "SELECT time_updated, temp_value, humidity_value FROM ".$db_prefix."sensors_log WHERE sensor_id={$sensorID[0][0]} ORDER BY time_updated DESC LIMIT 1";
+	$resultS = $mysqli->query($queryS);
+	$sensorDataNow = $resultS->fetch_array();
+
+	/* Max, min and average
+	--------------------------------------------------------------------------- */
+	$queryS = "SELECT AVG(temp_value), MAX(temp_value), MIN(temp_value), AVG(humidity_value), MAX(humidity_value), MIN(humidity_value) FROM " . $db_prefix . "sensors_log WHERE sensor_id={$sensorID[0][0]} AND (time_updated > '$dateFrom' AND time_updated < '$dateTo') ";
+	$resultS = $mysqli->query($queryS);
+	$sensorData = $resultS->fetch_array();
+	
+	echo "<fieldset>";
+	echo "<h5><b>" . $lang['Total'] . " " . $lang['since'] . " " . date("Y-m-d H:i", $time_start) . " " . strtolower($lang['To']) . " " . date("Y-m-d H:i", $time_stop) . "</b></h5>";
+	echo "<table class='table table-striped table-hover'>";
+		echo "<tbody>";
+
+		// Temperature
+		echo "<tr>";
+			echo "<td>".$lang['Temperature']." ".strtolower($lang['Now'])."</td>";
+			echo "<td>".round($sensorDataNow['temp_value'], 2)." &deg;<abbr style='margin-left:20px;' class=\"timeago\" title='".date("c", $sensorDataNow['time_updated'])."'>".date("Y-m-d H:i", $sensorDataNow['time_updated'])."</abbr></td>";
+		echo "</tr>";
+
+		echo "<tr>";
+			echo "<td>" . $lang['Max'] . " " . strtolower($lang['Temperature']) . "</td>";
+			echo "<td>" . round($sensorData['MAX(temp_value)'], 2) . " &deg;C</td>";
+		echo "</tr>";
+		echo "<tr>";
+			echo "<td>" . $lang['Avrage'] . " " . strtolower($lang['Temperature']) . "</td>";
+			echo "<td>" . round($sensorData['AVG(temp_value)'], 2) . " &deg;C</td>";
+		echo "</tr>";
+		echo "<tr>";
+			echo "<td>" . $lang['Min'] . " " . strtolower($lang['Temperature']) . "</td>";
+			echo "<td>" . round($sensorData['MIN(temp_value)'], 2) . " &deg;C </td>";
+		echo "</tr>";
+
+		// Humidity
+		if ($sensorDataNow['humidity_value'] > 0) {
+			echo "<tr>";
+				echo "<td>".$lang['Humidity']." ".strtolower($lang['Now'])."</td>";
+				echo "<td>".round($sensorDataNow['humidity_value'], 2)." %<abbr style='margin-left:20px;' class=\"timeago\" title='".date("c", $sensorDataNow['time_updated'])."'>".date("Y-m-d H:i", $sensorDataNow['time_updated'])."</abbr></td>";
+			echo "</tr>";
+			echo "<tr>";
+				echo "<td>" . $lang['Max'] . " " . strtolower($lang['Humidity']) . "</td>";
+				echo "<td>" . round($sensorData['MAX(humidity_value)'], 2) . " %</td>";
+			echo "</tr>";
+			echo "<tr>";
+				echo "<td>" . $lang['Avrage'] . " " . strtolower($lang['Humidity']) . "</td>";
+				echo "<td>" . round($sensorData['AVG(humidity_value)'], 2) . " %</td>";
+			echo "</tr>";
+			echo "<tr>";
+				echo "<td>" . $lang['Min'] . " " . strtolower($lang['Humidity']) . "</td>";
+				echo "<td>" . round($sensorData['MIN(humidity_value)'], 2) . " %</td>";
+			echo "</tr>";
+		}
+
+		echo "</tbody>";
+	echo "</table>";
+	echo "</fieldset>";
+};
+
+/* Show errormessage if error
+--------------------------------------------------------------------------- */
+if ($error) {
+	echo "<div class='alert alert-warning'>" . $lang['Wrong timeformat'] . "</div>";
+};
+?>

@@ -1,5 +1,6 @@
 <!-- <script src="lib/packages/Highcharts-4.0.4/js/highcharts.js"></script>
 <script src="lib/packages/Highcharts-4.0.4/js/modules/exporting.js"></script> -->
+<<<<<<< HEAD
 <script src="http://code.highcharts.com/stock/highstock.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script src="lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.min.js" ></script>
@@ -142,7 +143,7 @@ if (!isset($dateFrom)) {
 	$timeFrom = "00:00";
 	$dateTo = date("Y-m-d");
 	$timeTo = "23:59";
-	$jump = 1;
+	$jump = 4;
 }
 
 /* Create unix timestamps
@@ -327,7 +328,11 @@ echo <<<end
 			useUTC: false
 		}
 	});
+<<<<<<< HEAD
 		$('#container').highcharts('StockChart',{
+=======
+		$('#container').highcharts({
+>>>>>>> 558447d0fef02c9c1fc5d4ed4bc4b706bb0ae6f1
 			navigator: {
 				series: {
 					includeInCSVExport: false

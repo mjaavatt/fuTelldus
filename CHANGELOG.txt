@@ -4,13 +4,39 @@
   _____________________________________________________________________________
 
   	- Compare data from different times in a chart
-  	- Combine humidity charts (like temperature)
-  	- Highcharts
-
+ 
 
 
   CHANGELOG - fuTelldus
   _____________________________________________________________________________
+ 
+ 
+ 
+ 
+	22.05.2015
+	---------------------------------------------------------------
+	CHANGES:
+	- Uses Bootstrap CDN 3.3.4
+	- Uses Bootstrapselect 1.7.1
+	- Uses JQuery 2.1.4
+	- Uses JQueryUI 1.11.3
+	- Uses Font Awesome 4.3.0
+	
+	
+	26.11.2014
+	---------------------------------------------------------------
+	CHANGES:
+	- Minor design changes
+	- Uses Higcharts CDN
+	- Uses Bootstrap CDN
+	- Uses JQuery CDN
+
+
+	23.08.2014
+	---------------------------------------------------------------
+	CHANGES:
+	- Combined humidity charts
+	- Updated to Higcharts 4.0.3
 
 
 

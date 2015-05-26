@@ -6,9 +6,7 @@
 
 </script>
 
-
 <style>
-
 	.sensors-wrap {
 		padding-left:20px;
 	}
@@ -54,20 +52,14 @@
 
 </style>
 
-
-
 <?php
 
 	// Margin for desktop and pad
-	echo "<div style='height:30px;' class='hidden-phone'></div>";
-
-
-
+	echo "<div style='height:30px;' class='hidden-xs'></div>";
 
 	// Sensors
 	echo "<div class='sensors-wrap'>";
 	
-
 		/* My sensors
    		--------------------------------------------------------------------------- */
 		$query = "SELECT * FROM ".$db_prefix."sensors WHERE monitoring='1' AND public='1'";
@@ -75,7 +67,6 @@
 
 	    while ($row = $result->fetch_array()) {
 	    	
-
 	    	$sensorID = trim($row['sensor_id']);
 
 	    	$queryS = "SELECT * FROM ".$db_prefix."sensors_log WHERE sensor_id='$sensorID' AND time_updated > '$showFromDate' ORDER BY time_updated DESC LIMIT 1";
@@ -107,13 +98,12 @@
             	}
 
             	echo "<div class='sensor-timeago'>";
-            		echo "<abbr class=\"timeago\" title='".date("c", $sensorData['time_updated'])."'>".date("d-m-Y H:i", $sensorData['time_updated'])."</abbr>";
+            		echo "<abbr class=\"timeago\" title='".date("c", $sensorData['time_updated'])."'>".date("Y-m-d H:i", $sensorData['time_updated'])."</abbr>";
             	echo "</div>";
 
             	echo "<div style='text-align:left; margin-top:10px;'>";
-            		echo "<a href='?page=chart&id=$sensorID'><img style='height:16px;' src='../images/chart_line.png' /> {$lang['View chart']}</a>";
+			echo "<a href='?page=chart&id=$sensorID&name={$row['name']}&clientname={$row['clientname']}'><img style='height:16px;' src='../images/chart_line.png' /> {$lang['View chart']}</a>";
             	echo "</div>";
-
             echo "</div>";
 	    }
 

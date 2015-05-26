@@ -16,6 +16,10 @@ $lang = array(
 	"Lights" => "Lights",
 	"Settings" => "Settings",
 	"Log out" => "Log out",
+	"Log in" => "Log in",
+	"Return" => "Return",
+  	"Switch to" => "Switch to",
+  	"Signed in as" => "Signed in as",
 
 	"Page settings" => "Page settings",
 	"Users" => "Users",
@@ -92,6 +96,10 @@ $lang = array(
 	"Combine charts" => "Combine charts",
 	"Split charts" => "Split charts",
 	"View chart" => "View chart",
+  	"Temp now" => "Current temperature",
+	"Set filter" => "Set filter",
+	"Chose graph" => "Chose graph",
+	"Export as" => "Export as",
 
 
 	// Sensors
@@ -176,6 +184,7 @@ $lang = array(
 	"Secondary" => "Secondary",
 	"Now" => "Now",
 	"Action" => "Action",
+	"To" => "To",
 
 		// send warning IF temperature IS more/less THAN   / FOR sensor ...
 		"If" => "If",
@@ -202,7 +211,7 @@ $lang = array(
 	"weeks" => "weeks",
 	"months" => "months",
 	"years" => "years",
-
+	"Remember me" => "Remember me",
 );
 
 ?>

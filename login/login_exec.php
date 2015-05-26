@@ -2,14 +2,9 @@
 	
 	require("../lib/base.inc.php");
 
-
-
-
-	
 	// Set error to false
 	$error = false;
-	
-	
+		
 	// Get data from form
 	if (isset($_POST['mail'])) 
 		$mail = clean($_POST['mail']);
@@ -24,13 +19,10 @@
 	if (isset($_POST['uniq'])) 
 		$uniq = clean($_POST['uniq']);
 	
-	
-
 	// Check if form is filled out
 	if (empty($_POST['mail']) || empty($_POST['password'])) {
 		$error = true;
 	}
-	
 	
 	// Hash the password
 	$cryptPW = hash('sha256', $password);
@@ -45,15 +37,12 @@
 	echo "mail: $mail <br />";
 	echo "password: $password <br />";
 	echo "cryptPW: $cryptPW <br />";
-	
-	
+		
 	// Redirect if an error is found
 	if ($error) {
 		header("Location: index.php?msg=01&mail=".$_POST['mail']."&error=invalidSecureLogin");
 		exit();
 	}
-	
-	
 	
 	// Start logging in if all is good up to now!
 	else {
@@ -78,7 +67,6 @@
 				setcookie("fuTelldus_user_loggedin", $userLogin['user_id'], $expire);
 			}
 
-
 			session_write_close();
 			
 			header("Location: ../index.php");
@@ -92,11 +80,9 @@
 		}
 	}
 	
-	
 	// If scripts failed along the way -> Redirect to login again
 	header("Location: index.php?msg=01&mail=".$_POST['mail']."&error=noAction");
 	exit();
-	
 	
 	unset($_SESSION['secure_fuTelldus_loginForm']);	
 ?>
