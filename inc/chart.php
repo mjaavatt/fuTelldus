@@ -142,7 +142,7 @@ if (!isset($dateFrom)) {
 	$timeFrom = "00:00";
 	$dateTo = date("Y-m-d");
 	$timeTo = "23:59";
-	$jump = 4;
+	$jump = 1;
 }
 
 /* Create unix timestamps
@@ -339,11 +339,11 @@ echo <<<end
 				buttons: [{
 					type: 'hour',
 					count: 1,
-					text: '1{$lang['h']}'
+					text: '1h'
 				}, {
 					type: 'day',
 					count: 1,
-					text: '1{$lang['d']}'
+					text: '1d'
 				}, {
 					type: 'week',
 					count: 1,
