@@ -1,5 +1,6 @@
 <!-- <script src="lib/packages/Highcharts-4.0.4/js/highcharts.js"></script>
 <script src="lib/packages/Highcharts-4.0.4/js/modules/exporting.js"></script> -->
+<<<<<<< HEAD
 <script src="http://code.highcharts.com/stock/highstock.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script src="lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.min.js" ></script>
@@ -9,6 +10,18 @@
 <!-- Initialize Bootstrap-select -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js" ></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+=======
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.min.js" ></script>
+<link href="lib/packages/jonthornton-jquery-timepicker/jquery.timepicker.css" rel="stylesheet">
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<script src="lib/packages/jquery/jquery.ui.datepicker-sv.js"></script> <!-- Swedish languagefile for jquery-datepicker -->
+
+<!-- Initialize Bootstrap-select -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.1/js/bootstrap-select.min.js" ></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.1/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+>>>>>>> 558447d0fef02c9c1fc5d4ed4bc4b706bb0ae6f1
 
 <!-- Initialize Export-CSV -->
 <script src="lib/packages/export-csv/export-csv.js" ></script>
@@ -138,11 +151,19 @@ else {
 /* Sets start date if not chosen
 --------------------------------------------------------------------------- */
 if (!isset($dateFrom)) {
+<<<<<<< HEAD
 	$dateFrom = date("Y-m-d", strtotime(' -1 year'));
 	$timeFrom = "00:00";
 	$dateTo = date("Y-m-d");
 	$timeTo = "23:59";
 	$jump = 1;
+=======
+	$dateFrom = date("Y-m-d", strtotime(' -1 day'));
+	$timeFrom = "00:00";
+	$dateTo = date("Y-m-d");
+	$timeTo = "23:59";
+	$jump = 4;
+>>>>>>> 558447d0fef02c9c1fc5d4ed4bc4b706bb0ae6f1
 }
 
 /* Create unix timestamps
@@ -289,13 +310,13 @@ foreach($sensorID as list($id, $name)) {
 	/* Desides if to plot the humidity or not
 	--------------------------------------------------------------------------- */
 	if ($showHumidity == 1) {
-		$seriesOptions[$countSensors] = "{name: '(" . $lang['Temperature'] . ") {$name}',  marker: { enabled: true}, data: [$joinValues], tooltip: {valueDecimals: 1, valueSuffix: '°C'}}";
+		$seriesOptions[$countSensors] = "{name: '(" . $lang['Temperature'] . ") {$name}', type: 'spline', data: [$joinValues], tooltip: {valueDecimals: 1, valueSuffix: '°C'}}";
 		$countSensors++;
-		$seriesOptions[$countSensors] = "{name: '(" . $lang['Humidity'] . ") {$name}', dashStyle: 'shortdot', data: [$joinhumValues], visible: false, yAxis: 1, tooltip: {valueDecimals: 1, valueSuffix: '%'}}";
+		$seriesOptions[$countSensors] = "{name: '(" . $lang['Humidity'] . ") {$name}', type: 'spline', dashStyle: 'shortdot', data: [$joinhumValues], visible: false, yAxis: 1, tooltip: {valueDecimals: 1, valueSuffix: '%'}}";
 		$countSensors++;
 	}
 	else {
-		$seriesOptions[$countSensors] = "{name: '(" . $lang['Temperature'] . ") {$name}', marker: { symbol: 'square'}, type: 'spline', data: [$joinValues], tooltip: {valueDecimals: 1, valueSuffix: '°C'}}";
+		$seriesOptions[$countSensors] = "{name: '(" . $lang['Temperature'] . ") {$name}', type: 'spline', data: [$joinValues], tooltip: {valueDecimals: 1, valueSuffix: '°C'}}";
 		$countSensors++;
 	}
 
@@ -327,7 +348,11 @@ echo <<<end
 			useUTC: false
 		}
 	});
+<<<<<<< HEAD
 		$('#container').highcharts('StockChart',{
+=======
+		$('#container').highcharts({
+>>>>>>> 558447d0fef02c9c1fc5d4ed4bc4b706bb0ae6f1
 			navigator: {
 				series: {
 					includeInCSVExport: false
@@ -339,36 +364,37 @@ echo <<<end
 				buttons: [{
 					type: 'hour',
 					count: 1,
-					text: '1h'
+					text: '1{$lang['h']}'
 				}, {
 					type: 'day',
 					count: 1,
-					text: '1d'
+					text: '1{$lang['d']}'
 				}, {
 					type: 'week',
 					count: 1,
-					text: '1w'
+					text: '1{$lang['w']}'
 				}, {
 					type: 'month',
 					count: 1,
-					text: '1m'
+					text: '1{$lang['m']}'
 				}, {
 					type: 'month',
 					count: 6,
-					text: '6m'
+					text: '6{$lang['m']}'
 				}, {
 					type: 'year',
 					count: 1,
-					text: '1yr'
+					text: '1{$lang['yr']}'
 				}, {
 					type: 'all',
-					text: 'All'
+					text: '{$lang['All']}'
 				}],
 				selected: 2
 			},
 
 			chart: {
-		      //				renderTo: 'container',
+				renderTo: 'container',
+				type: 'spline',
 				zoomType: 'x', //makes it possible to zoom in the chart
 				pinchType: 'x', //possible to pinch-zoom on touchscreens
 				backgroundColor: '#FFFFFF', //sets background color
@@ -424,8 +450,8 @@ echo <<<end
 			series: $seriesData,
 
 			plotOptions: {
-				line: {
-					gapSize: 1
+				spline: {
+					gapSize: 0
 				}
 			},
 
