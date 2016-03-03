@@ -289,13 +289,13 @@ foreach($sensorID as list($id, $name)) {
 	/* Desides if to plot the humidity or not
 	--------------------------------------------------------------------------- */
 	if ($showHumidity == 1) {
-		$seriesOptions[$countSensors] = "{name: '(" . $lang['Temperature'] . ") {$name}', type: 'spline', data: [$joinValues], tooltip: {valueDecimals: 1, valueSuffix: '°C'}}";
+		$seriesOptions[$countSensors] = "{name: '(" . $lang['Temperature'] . ") {$name}',  marker: { enabled: true}, data: [$joinValues], tooltip: {valueDecimals: 1, valueSuffix: '°C'}}";
 		$countSensors++;
-		$seriesOptions[$countSensors] = "{name: '(" . $lang['Humidity'] . ") {$name}', type: 'spline', dashStyle: 'shortdot', data: [$joinhumValues], visible: false, yAxis: 1, tooltip: {valueDecimals: 1, valueSuffix: '%'}}";
+		$seriesOptions[$countSensors] = "{name: '(" . $lang['Humidity'] . ") {$name}', dashStyle: 'shortdot', data: [$joinhumValues], visible: false, yAxis: 1, tooltip: {valueDecimals: 1, valueSuffix: '%'}}";
 		$countSensors++;
 	}
 	else {
-		$seriesOptions[$countSensors] = "{name: '(" . $lang['Temperature'] . ") {$name}', type: 'spline', data: [$joinValues], tooltip: {valueDecimals: 1, valueSuffix: '°C'}}";
+		$seriesOptions[$countSensors] = "{name: '(" . $lang['Temperature'] . ") {$name}', marker: { symbol: 'square'}, type: 'spline', data: [$joinValues], tooltip: {valueDecimals: 1, valueSuffix: '°C'}}";
 		$countSensors++;
 	}
 
@@ -347,29 +347,28 @@ echo <<<end
 				}, {
 					type: 'week',
 					count: 1,
-					text: '1{$lang['w']}'
+					text: '1w'
 				}, {
 					type: 'month',
 					count: 1,
-					text: '1{$lang['m']}'
+					text: '1m'
 				}, {
 					type: 'month',
 					count: 6,
-					text: '6{$lang['m']}'
+					text: '6m'
 				}, {
 					type: 'year',
 					count: 1,
-					text: '1{$lang['yr']}'
+					text: '1yr'
 				}, {
 					type: 'all',
-					text: '{$lang['All']}'
+					text: 'All'
 				}],
 				selected: 2
 			},
 
 			chart: {
-				renderTo: 'container',
-				type: 'spline',
+		      //				renderTo: 'container',
 				zoomType: 'x', //makes it possible to zoom in the chart
 				pinchType: 'x', //possible to pinch-zoom on touchscreens
 				backgroundColor: '#FFFFFF', //sets background color
