@@ -425,7 +425,7 @@ echo <<<end
 
 			plotOptions: {
 				line: {
-					gapSize: 1
+					gapSize: 20
 				}
 			},
 
