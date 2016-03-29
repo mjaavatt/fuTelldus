@@ -478,7 +478,7 @@ if (count($sensorID) == 1) {
 			echo "<td>" . round($sensorData['MAX(temp_value)'], 2) . " &deg;C</td>";
 		echo "</tr>";
 		echo "<tr>";
-			echo "<td>" . $lang['Avrage'] . " " . strtolower($lang['Temperature']) . "</td>";
+			echo "<td>" . $lang['Average'] . " " . strtolower($lang['Temperature']) . "</td>";
 			echo "<td>" . round($sensorData['AVG(temp_value)'], 2) . " &deg;C</td>";
 		echo "</tr>";
 		echo "<tr>";
@@ -497,7 +497,7 @@ if (count($sensorID) == 1) {
 				echo "<td>" . round($sensorData['MAX(humidity_value)'], 2) . " %</td>";
 			echo "</tr>";
 			echo "<tr>";
-				echo "<td>" . $lang['Avrage'] . " " . strtolower($lang['Humidity']) . "</td>";
+				echo "<td>" . $lang['Average'] . " " . strtolower($lang['Humidity']) . "</td>";
 				echo "<td>" . round($sensorData['AVG(humidity_value)'], 2) . " %</td>";
 			echo "</tr>";
 			echo "<tr>";
