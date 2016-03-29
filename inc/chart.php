@@ -338,8 +338,8 @@ echo <<<end
 				enabled: true,
 				buttons: [{
 					type: 'hour',
-					count: 1,
-					text: '1h'
+					count: 12,
+					text: '12h'
 				}, {
 					type: 'day',
 					count: 1,
